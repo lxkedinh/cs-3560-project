@@ -1,3 +1,5 @@
+package cs_3560_project.app;
+
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
@@ -20,4 +22,7 @@ public class App extends Application {
         launch();
     }
 
+    public String getGreeting() {
+        return "Hello World!";
+    }
 }
