@@ -42,7 +42,7 @@ java {
 
 application {
     // Define the main class for the application.
-    mainClass = 'app.App'
+    mainClass = 'cs_3560_project.app.App'
 }
 
 tasks.named('test') {
