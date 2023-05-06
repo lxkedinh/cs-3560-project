@@ -7,31 +7,33 @@ import jakarta.persistence.MappedSuperclass;
 @MappedSuperclass
 public class Creator extends Person {
 
-    @Id
-    @Column(name = "id")
-    private int id;
+  @Id
+  @Column(name = "id")
+  private int id;
 
-    @Column(name = "nationality")
-    private String nationality;
+  @Column(name = "nationality")
+  private String nationality;
 
-    public Creator(String name, String nationality) {
-        super(name);
-        this.nationality = nationality;
-    }
+  public Creator() {};
 
-    public int getId() {
-        return id;
-    }
+  public Creator(String name, String nationality) {
+    super(name);
+    this.nationality = nationality;
+  }
 
-    public String getNationality() {
-        return nationality;
-    }
+  public int getId() {
+    return id;
+  }
 
-    public void setId(int id) {
-        this.id = id;
-    }
+  public String getNationality() {
+    return nationality;
+  }
 
-    public void setNationality(String nationality) {
-        this.nationality = nationality;
-    }
+  public void setId(int id) {
+    this.id = id;
+  }
+
+  public void setNationality(String nationality) {
+    this.nationality = nationality;
+  }
 }

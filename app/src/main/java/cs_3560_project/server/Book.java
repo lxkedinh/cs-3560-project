@@ -5,8 +5,6 @@ import java.util.List;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 
@@ -14,59 +12,59 @@ import jakarta.persistence.Table;
 @Table(name = "book")
 public class Book extends Item {
 
-    @Column(name = "pages")
-    private int pages;
+  @Column(name = "pages")
+  private int pages;
 
-    @Column(name = "publisher")
-    private String publisher;
+  @Column(name = "publisher")
+  private String publisher;
 
-    @Column(name = "publication_date")
-    private LocalDate publicationDate;
+  @Column(name = "publication_date")
+  private LocalDate publicationDate;
 
-    @ManyToMany(cascade = CascadeType.PERSIST)
-    @JoinTable(name = "author_book", joinColumns = @JoinColumn(name = "item_code"),
-            inverseJoinColumns = @JoinColumn(name = "author_id"))
-    private List<Author> authors;
+  @ManyToMany(mappedBy = "books", cascade = CascadeType.PERSIST)
+  private List<Author> authors;
 
-    public Book(int code, String title, String description, String location, double dailyPrice,
-            ItemStatus status, int pages, String publisher, LocalDate publicationDate) {
-        super(code, title, description, location, dailyPrice, status);
-        this.pages = pages;
-        this.publisher = publisher;
-        this.publicationDate = publicationDate;
-    }
+  public Book() {};
 
-    public int getPages() {
-        return pages;
-    }
+  public Book(int code, String title, String description, String location, double dailyPrice,
+      ItemStatus status, int pages, String publisher, LocalDate publicationDate) {
+    super(code, title, description, location, dailyPrice, status);
+    this.pages = pages;
+    this.publisher = publisher;
+    this.publicationDate = publicationDate;
+  }
 
-    public String getPublisher() {
-        return publisher;
-    }
+  public int getPages() {
+    return pages;
+  }
 
-    public LocalDate getPublicationDate() {
-        return publicationDate;
-    }
+  public String getPublisher() {
+    return publisher;
+  }
 
-    public List<Author> getAllAuthors() {
-        return authors;
-    }
+  public LocalDate getPublicationDate() {
+    return publicationDate;
+  }
 
-    public void setPages(int pages) {
-        this.pages = pages;
-    }
+  public List<Author> getAllAuthors() {
+    return authors;
+  }
 
-    public void setPublisher(String publisher) {
-        this.publisher = publisher;
-    }
+  public void setPages(int pages) {
+    this.pages = pages;
+  }
 
-    public void setPublicationDate(LocalDate publicationDate) {
-        this.publicationDate = publicationDate;
-    }
+  public void setPublisher(String publisher) {
+    this.publisher = publisher;
+  }
 
-    public void setAllAuthors(List<Author> authors) {
-        this.authors = authors;
-    }
+  public void setPublicationDate(LocalDate publicationDate) {
+    this.publicationDate = publicationDate;
+  }
 
-    // toString()
+  public void setAllAuthors(List<Author> authors) {
+    this.authors = authors;
+  }
+
+  // toString()
 }

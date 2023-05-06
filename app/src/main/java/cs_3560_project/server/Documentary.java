@@ -12,44 +12,46 @@ import jakarta.persistence.Table;
 @Table(name = "documentary")
 public class Documentary extends Item {
 
-    @Column(name = "length")
-    private double length;
+  @Column(name = "length")
+  private double length;
 
-    @Column(name = "release_date")
-    private LocalDate releaseDate;
+  @Column(name = "release_date")
+  private LocalDate releaseDate;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "director_id")
-    private Director director;
+  @ManyToOne(cascade = CascadeType.PERSIST)
+  @JoinColumn(name = "director_id")
+  private Director director;
 
-    public Documentary(int code, String title, String description, String location,
-            double dailyPrice, ItemStatus status, double length, LocalDate releaseDate) {
-        super(code, title, description, location, dailyPrice, status);
-        this.length = length;
-        this.releaseDate = releaseDate;
-    }
+  public Documentary() {};
 
-    public double getLength() {
-        return length;
-    }
+  public Documentary(int code, String title, String description, String location, double dailyPrice,
+      ItemStatus status, double length, LocalDate releaseDate) {
+    super(code, title, description, location, dailyPrice, status);
+    this.length = length;
+    this.releaseDate = releaseDate;
+  }
 
-    public LocalDate getReleaseDate() {
-        return releaseDate;
-    }
+  public double getLength() {
+    return length;
+  }
 
-    public Director getDirector() {
-        return director;
-    }
+  public LocalDate getReleaseDate() {
+    return releaseDate;
+  }
 
-    public void setLength(double length) {
-        this.length = length;
-    }
+  public Director getDirector() {
+    return director;
+  }
 
-    public void setReleaseDate(LocalDate releaseDate) {
-        this.releaseDate = releaseDate;
-    }
+  public void setLength(double length) {
+    this.length = length;
+  }
 
-    public void setDirector(Director director) {
-        this.director = director;
-    }
+  public void setReleaseDate(LocalDate releaseDate) {
+    this.releaseDate = releaseDate;
+  }
+
+  public void setDirector(Director director) {
+    this.director = director;
+  }
 }

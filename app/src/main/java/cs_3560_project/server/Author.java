@@ -13,29 +13,31 @@ import jakarta.persistence.Table;
 @Table(name = "author")
 public class Author extends Creator {
 
-    @Column(name = "subject")
-    private String subject;
+  @Column(name = "subject")
+  private String subject;
 
-    @ManyToMany(cascade = CascadeType.PERSIST)
-    @JoinTable(name = "author_book", joinColumns = @JoinColumn(name = "author_id"),
-            inverseJoinColumns = @JoinColumn(name = "item_code"))
-    private List<Book> books;
+  @ManyToMany(cascade = CascadeType.PERSIST)
+  @JoinTable(name = "author_book", joinColumns = @JoinColumn(name = "author_id"),
+      inverseJoinColumns = @JoinColumn(name = "item_code"))
+  private List<Book> books;
 
-    public Author(String name, String nationality, String subject) {
-        super(name, nationality);
-        this.subject = subject;
-    }
+  public Author() {};
 
-    public String getSubject() {
-        return subject;
-    }
+  public Author(String name, String nationality, String subject) {
+    super(name, nationality);
+    this.subject = subject;
+  }
 
-    public void setSubject(String subject) {
-        this.subject = subject;
-    }
+  public String getSubject() {
+    return subject;
+  }
 
-    // createBook()
+  public void setSubject(String subject) {
+    this.subject = subject;
+  }
 
-    // listAllBooks()
+  // createBook()
+
+  // listAllBooks()
 
 }
