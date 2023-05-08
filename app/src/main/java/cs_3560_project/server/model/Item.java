@@ -1,4 +1,4 @@
-package cs_3560_project.server;
+package cs_3560_project.server.model;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;

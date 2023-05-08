@@ -1,4 +1,4 @@
-package cs_3560_project.server;
+package cs_3560_project.server.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Id;

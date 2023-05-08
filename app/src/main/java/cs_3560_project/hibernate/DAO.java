@@ -2,7 +2,7 @@ package cs_3560_project.hibernate;
 
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
-import cs_3560_project.server.*;
+import cs_3560_project.server.model.*;
 
 public class DAO {
   private static SessionFactory factory =
@@ -11,6 +11,10 @@ public class DAO {
           .addAnnotatedClass(Documentary.class).addAnnotatedClass(Item.class)
           .addAnnotatedClass(Loan.class).addAnnotatedClass(Person.class)
           .addAnnotatedClass(Student.class).buildSessionFactory();
+
+  public static SessionFactory getFactory() {
+    return factory;
+  }
 
   /**
    * @param newEntity - entity to add to the database
