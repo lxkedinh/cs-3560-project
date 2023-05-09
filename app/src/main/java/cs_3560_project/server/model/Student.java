@@ -39,9 +39,9 @@ public class Student extends Person {
     return course;
   }
 
-  // public Loan getLoan() {
-  // return loan;
-  // }
+  public Loan getLoan() {
+    return loan;
+  }
 
   public void setBroncoId(int broncoId) {
     this.broncoId = broncoId;
@@ -51,9 +51,9 @@ public class Student extends Person {
     this.course = course;
   }
 
-  // public void setLoan(Loan loan) {
-  // this.loan = loan;
-  // }
+  public void setLoan(Loan loan) {
+    this.loan = loan;
+  }
 
   // toString()
 }

@@ -6,10 +6,12 @@ import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.PrimaryKeyJoinColumn;
 import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "book")
+@PrimaryKeyJoinColumn(name = "item_code")
 public class Book extends Item {
 
   @Column(name = "pages")
