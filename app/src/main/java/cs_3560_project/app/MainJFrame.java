@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
-package cs_3560_project.server;
+package cs_3560_project.app;
 
 import static cs_3560_project.app.App.w;
 import java.awt.BorderLayout;
@@ -28,19 +28,27 @@ public class MainJFrame extends javax.swing.JFrame {
     public final String MENU = "menu";
     public final String LOAN = "loan";
     public final String INVENTORY = "inventory";
-    public final String STUDENT = "student";
-    public final String ITEM = "item";
+    public final String MANAGEMENT = "management";
     private final CardLayout cLayout;
     private final JPanel mainPane;
+    private MenuScreen menuScreen;
+    private LoanScreen loanScreen;
+    private ItemScreen inventoryScreen;
+    private ManagementScreen managementScreen;
+    
     
     /**
      * Creates new form MainJFrame
+     * @param menuScreen
+     * @param loanScreen
+     * @param inventoryScreen
+     * @param managementScreen
+     * @throws java.lang.InterruptedException
      */
     public MainJFrame(JPanel menuScreen, 
             JPanel loanScreen, 
             JPanel inventoryScreen, 
-            JPanel studentScreen, 
-            JPanel itemScreen) throws InterruptedException {
+            JPanel managementScreen) throws InterruptedException {
         initComponents();
         
         setTitle("It's Morbin Time!");
@@ -51,12 +59,16 @@ public class MainJFrame extends javax.swing.JFrame {
         mainPane.setPreferredSize(new Dimension(600,400));
         cLayout = new CardLayout();
         mainPane.setLayout(cLayout);
+        
+        /**menuScreen = this.menuScreen;
+        loanScreen = this.loanScreen;
+        inventoryScreen = this.inventoryScreen;
+        managementScreen = this.managementScreen;**/
 
         mainPane.add(MENU, menuScreen);
         mainPane.add(LOAN, loanScreen);
         mainPane.add(INVENTORY, inventoryScreen);
-        mainPane.add(STUDENT, studentScreen);
-        mainPane.add(ITEM, itemScreen);
+        mainPane.add(MANAGEMENT, managementScreen);
         
         cLayout.show(mainPane, MENU);
         
@@ -74,6 +86,7 @@ public class MainJFrame extends javax.swing.JFrame {
         ActionMap myActionMap;
         
         Action exitProgram = new AbstractAction(){
+         @Override
          public void actionPerformed(ActionEvent evt) {
                 w.dispatchEvent(new WindowEvent(w, WindowEvent.WINDOW_CLOSING));
              }

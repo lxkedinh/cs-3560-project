@@ -1,12 +1,5 @@
 package cs_3560_project.app;
 
-import cs_3560_project.server.InventoryScreen;
-import cs_3560_project.server.ItemScreen;
-import cs_3560_project.server.LoanScreen;
-import cs_3560_project.server.Main;
-import cs_3560_project.server.MainJFrame;
-import cs_3560_project.server.MenuScreen;
-import cs_3560_project.server.StudentScreen;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Application;
@@ -49,22 +42,20 @@ public class App extends Application {
             @Override
             public void run() {
                 try { 
-                    MenuScreen menuScreen = new cs_3560_project.server.MenuScreen();
-                    LoanScreen loanScreen = new cs_3560_project.server.LoanScreen();
-                    InventoryScreen inventoryScreen = new cs_3560_project.server.InventoryScreen();
-                    StudentScreen studentScreen = new cs_3560_project.server.StudentScreen();
-                    ItemScreen itemScreen =  new cs_3560_project.server.ItemScreen();
+                    MenuScreen menuScreen = new MenuScreen();
+                    LoanScreen loanScreen = new LoanScreen();
+                    ItemScreen inventoryScreen = new ItemScreen();
+                    ManagementScreen managementScreen =  new ManagementScreen();
                     
                     w = new MainJFrame(menuScreen, 
                             loanScreen, 
                             inventoryScreen,
-                            studentScreen,
-                            itemScreen
+                            managementScreen
                     );
                     w.setLocationRelativeTo(null);
                     
                 } catch (InterruptedException ex) {
-                    Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         });

@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
  */
-package cs_3560_project.server;
+package cs_3560_project.app;
 
 import static cs_3560_project.app.App.w;
 
@@ -31,8 +31,7 @@ public class MenuScreen extends javax.swing.JPanel {
         jLabel1 = new javax.swing.JLabel();
         LoanButton = new javax.swing.JButton();
         InventoryButton = new javax.swing.JButton();
-        StudentButton = new javax.swing.JButton();
-        ItemButton = new javax.swing.JButton();
+        ManagementButton = new javax.swing.JButton();
 
         jLabel1.setText("Menu");
 
@@ -50,17 +49,10 @@ public class MenuScreen extends javax.swing.JPanel {
             }
         });
 
-        StudentButton.setText("Student");
-        StudentButton.addActionListener(new java.awt.event.ActionListener() {
+        ManagementButton.setText("Management");
+        ManagementButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                StudentButtonActionPerformed(evt);
-            }
-        });
-
-        ItemButton.setText("Item");
-        ItemButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                ItemButtonActionPerformed(evt);
+                ManagementButtonActionPerformed(evt);
             }
         });
 
@@ -78,9 +70,8 @@ public class MenuScreen extends javax.swing.JPanel {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(InventoryButton)
                             .addComponent(LoanButton)
-                            .addComponent(StudentButton)
-                            .addComponent(ItemButton))))
-                .addContainerGap(166, Short.MAX_VALUE))
+                            .addComponent(ManagementButton))))
+                .addContainerGap(145, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -92,10 +83,8 @@ public class MenuScreen extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(InventoryButton)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(StudentButton)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(ItemButton)
-                .addContainerGap(85, Short.MAX_VALUE))
+                .addComponent(ManagementButton)
+                .addContainerGap(114, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -107,20 +96,15 @@ public class MenuScreen extends javax.swing.JPanel {
         w.switchPanes("inventory");
     }//GEN-LAST:event_InventoryButtonActionPerformed
 
-    private void StudentButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_StudentButtonActionPerformed
-        w.switchPanes("student");
-    }//GEN-LAST:event_StudentButtonActionPerformed
-
-    private void ItemButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ItemButtonActionPerformed
-        w.switchPanes("item");
-    }//GEN-LAST:event_ItemButtonActionPerformed
+    private void ManagementButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ManagementButtonActionPerformed
+        w.switchPanes("management");
+    }//GEN-LAST:event_ManagementButtonActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton InventoryButton;
-    private javax.swing.JButton ItemButton;
     private javax.swing.JButton LoanButton;
-    private javax.swing.JButton StudentButton;
+    private javax.swing.JButton ManagementButton;
     private javax.swing.JLabel jLabel1;
     // End of variables declaration//GEN-END:variables
 }

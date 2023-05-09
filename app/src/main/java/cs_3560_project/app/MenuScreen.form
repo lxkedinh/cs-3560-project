@@ -27,12 +27,11 @@
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="InventoryButton" min="-2" max="-2" attributes="0"/>
                           <Component id="LoanButton" min="-2" max="-2" attributes="0"/>
-                          <Component id="StudentButton" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Component id="ItemButton" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="ManagementButton" alignment="0" min="-2" max="-2" attributes="0"/>
                       </Group>
                   </Group>
               </Group>
-              <EmptySpace pref="166" max="32767" attributes="0"/>
+              <EmptySpace pref="145" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -46,10 +45,8 @@
               <EmptySpace max="-2" attributes="0"/>
               <Component id="InventoryButton" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="StudentButton" min="-2" max="-2" attributes="0"/>
-              <EmptySpace max="-2" attributes="0"/>
-              <Component id="ItemButton" min="-2" max="-2" attributes="0"/>
-              <EmptySpace pref="85" max="32767" attributes="0"/>
+              <Component id="ManagementButton" min="-2" max="-2" attributes="0"/>
+              <EmptySpace pref="114" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -76,20 +73,12 @@
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="InventoryButtonActionPerformed"/>
       </Events>
     </Component>
-    <Component class="javax.swing.JButton" name="StudentButton">
+    <Component class="javax.swing.JButton" name="ManagementButton">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Student"/>
+        <Property name="text" type="java.lang.String" value="Management"/>
       </Properties>
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="StudentButtonActionPerformed"/>
-      </Events>
-    </Component>
-    <Component class="javax.swing.JButton" name="ItemButton">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="Item"/>
-      </Properties>
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="ItemButtonActionPerformed"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="ManagementButtonActionPerformed"/>
       </Events>
     </Component>
   </SubComponents>
