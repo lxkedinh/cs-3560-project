@@ -6,7 +6,7 @@ import cs_3560_project.server.model.Student;
 
 public class StudentController {
 
-  public static void createStudent(Student student) {
+  public static void insertStudent(Student student) {
     DAO.create(student);
   }
 
