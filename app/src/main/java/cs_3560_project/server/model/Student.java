@@ -55,5 +55,10 @@ public class Student extends Person {
     this.loan = loan;
   }
 
-  // toString()
+  @Override
+  public String toString() {
+    return "Name: " + super.getName() + "\n" +
+        "Bronco ID: " + this.broncoId + "\n" +
+        "Course: " + this.course + "\n";
+  }
 }

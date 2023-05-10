@@ -130,4 +130,14 @@ public class Loan {
     isOverdue = LocalDate.now().compareTo(dueDate) > 0;
     return isOverdue;
   }
+
+  @Override
+  public String toString() {
+    return "Number: " + number + "\n" +
+        "Loan Date: " + loanDate + "\n" +
+        "Due Date: " + dueDate + "\n" +
+        "Return Date: " + returnDate + "\n" +
+        "Student: \n" + student + "\n" +
+        "Item: \n" + item + "\n";
+  }
 }

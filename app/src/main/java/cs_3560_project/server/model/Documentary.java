@@ -56,4 +56,18 @@ public class Documentary extends Item {
   public void setDirector(Director director) {
     this.director = director;
   }
+
+  @Override
+  public String toString() {
+    return "Code: " + super.getCode() + "\n" +
+        "Title: " + super.getTitle() + "\n" +
+        "Description: " + super.getDescription() + "\n" +
+        "Location: " + super.getLocation() + "\n" +
+        "Daily Price: " + super.getDailyPrice() + "\n" +
+        "Status: " + super.getStatus() + "\n" +
+        "Loan: \n" + super.getLoan() + "\n" +
+        "Length: " + length + "\n" +
+        "Release Date: " + releaseDate + "\n" +
+        "Director: \n" + director + "\n";
+  }
 }

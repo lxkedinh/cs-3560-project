@@ -68,5 +68,18 @@ public class Book extends Item {
     this.authors = authors;
   }
 
-  // toString()
+  @Override
+  public String toString() {
+    return "Code: " + super.getCode() + "\n" +
+        "Title: " + super.getTitle() + "\n" +
+        "Description: " + super.getDescription() + "\n" +
+        "Location: " + super.getLocation() + "\n" +
+        "Daily Price: " + super.getDailyPrice() + "\n" +
+        "Status: " + super.getStatus() + "\n" +
+        "Loan: " + super.getLoan() + "\n" +
+        "Pages: " + pages + "\n" +
+        "Publisher: " + publisher + "\n" +
+        "Publication Date: " + publicationDate + "\n" +
+        "Authors: " + authors.get(0) + "\n";
+  }
 }

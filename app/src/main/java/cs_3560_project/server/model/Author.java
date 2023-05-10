@@ -40,4 +40,11 @@ public class Author extends Creator {
 
   // listAllBooks()
 
+  @Override
+  public String toString() {
+    return "ID: " + super.getId() + "\n" +
+        "Name: " + super.getName() + "\n" +
+        "Nationality: " + super.getNationality() + "\n" +
+        "Subject: " + this.subject + "\n";
+  }
 }
