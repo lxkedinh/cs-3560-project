@@ -1,9 +1,14 @@
 package cs_3560_project.app;
 
 import javax.swing.*;
+
+import cs_3560_project.server.controllers.StudentController;
+import cs_3560_project.server.model.Student;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.LinkedList;
 
 public class ManageScreen extends JFrame {
     private JPanel mainPanel;
@@ -33,21 +38,44 @@ public class ManageScreen extends JFrame {
         add(mainPanel);
 
         pack();
-        setSize(800, 600); // Set the preferred size of the JFrame
+        setSize(800, 700); // Set the preferred size of the JFrame
         setLocationRelativeTo(null);
     }
 
     private void createDropdown() {
-        dropdown = new JComboBox<>(new String[] { "Student", "Book", "Documentary" });
-        dropdown.setPreferredSize(new Dimension(200, 40));
+        DefaultListCellRenderer renderer = new DefaultListCellRenderer() {
+            @Override
+            public Component getListCellRendererComponent(JList<?> list, Object value, int index,
+                    boolean isSelected, boolean cellHasFocus) {
+                Component component = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+
+                if (isSelected) {
+                    component.setBackground(new Color(60, 72, 107)); // Set your desired highlight color
+                    component.setForeground(new Color(240, 240, 240)); // Set the text color
+                } else {
+                    component.setBackground(list.getBackground());
+                    component.setForeground(list.getForeground());
+                }
+
+                return component;
+            }
+        };
+
+        dropdown = new JComboBox<>(new String[] { "Select Role", "Student", "Author", "Director" });
+        dropdown.setRenderer(renderer);
+        dropdown.setPreferredSize(new Dimension(50, 50));
         dropdown.setFont(new Font("Arial", Font.BOLD, 16));
         dropdown.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                String selectedItem = (String) dropdown.getSelectedItem();
-                updateButtonPanel(selectedItem);
+                if (!dropdown.getSelectedItem().equals("Select Role"))
+                {
+                    String selectedItem = (String) dropdown.getSelectedItem();
+                    updateButtonPanel(selectedItem);
+                }
             }
         });
         dropdown.setAlignmentX(Component.CENTER_ALIGNMENT);
+        dropdown.setSelectedItem("Select Role");
     }
 
     private void createButtonPanel() {
@@ -81,7 +109,7 @@ public class ManageScreen extends JFrame {
     private void createFormsPanel() {
         formsPanel = new JPanel(new GridBagLayout());
         formsPanel.setBackground(new Color(240, 240, 240)); // Light gray background color
-        formsPanel.setPreferredSize(new Dimension(600, 300));
+        formsPanel.setPreferredSize(new Dimension(800, 500));
         formsPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
         // Initialize the enterButton here
@@ -91,70 +119,60 @@ public class ManageScreen extends JFrame {
     }
 
     private void updateFormsPanel(String selectedItem, String actionButton) {
-    formsPanel.removeAll();
+        formsPanel.removeAll();
+        if (selectedItem != null && actionButton != null) {
+            LinkedList<JTextField> fields = new LinkedList<> ();
 
-    if (selectedItem != null && actionButton != null) {
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.anchor = GridBagConstraints.WEST;
-        gbc.insets = new Insets(5, 0, 5, 20);
-
-        JLabel actionLabel = new JLabel("Action: " + actionButton);
-        formsPanel.add(actionLabel, gbc);
-
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        gbc.anchor = GridBagConstraints.WEST;
-        gbc.insets = new Insets(5, 0, 5, 20);
-
-        JLabel nameLabel = new JLabel("Name:");
-        formsPanel.add(nameLabel, gbc);
-
-        gbc.gridx = 1;
-        gbc.gridy = 1;
-        gbc.anchor = GridBagConstraints.WEST;
-        gbc.insets = new Insets(5, 0, 5, 0);
-
-        JTextField nameTextField = new JTextField(20);
-        formsPanel.add(nameTextField, gbc);
-
-        gbc.gridx = 0;
-        gbc.gridy = 2;
-        gbc.anchor = GridBagConstraints.WEST;
-        gbc.insets = new Insets(5, 0, 5, 20);
-
-        JLabel idLabel = new JLabel("ID:");
-        formsPanel.add(idLabel, gbc);
-
-        gbc.gridx = 1;
-        gbc.gridy = 2;
-        gbc.anchor = GridBagConstraints.WEST;
-        gbc.insets = new Insets(5, 0, 5, 0);
-
-        JTextField idTextField = new JTextField(20);
-        formsPanel.add(idTextField, gbc);
-
-        // Add more labels and text fields as needed based on the selected option and action button
-
-        gbc.gridx = 1;
-        gbc.gridy = 3;
-        gbc.anchor = GridBagConstraints.EAST;
-        gbc.insets = new Insets(20, 0, 0, 0);
-
-        enterButton = createButton("Enter");
-        enterButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                // Process form data
-                JOptionPane.showMessageDialog(ManageScreen.this, "Form submitted successfully!");
+            // Implement Forms
+            if (actionButton.equals("Add"))
+            {
+                if (selectedItem.equals("Student"))
+                {
+                    LinkedList<String> lables = new LinkedList<>();
+                    lables.add("Name: ");
+                    lables.add("BroncoID: ");
+                    lables.add("Course: ");
+                    fields = FormSpecification.getTextFields("Add Student", lables, formsPanel);
+                }
             }
-        });
-        formsPanel.add(enterButton, gbc);
-    }
 
-    formsPanel.revalidate();
-    formsPanel.repaint();
-}
+            // Shortened code for entered fields
+            final LinkedList<JTextField> ef = fields;
+
+            // Enter Button
+            GridBagConstraints gbc = new GridBagConstraints();
+            gbc.gridx = 10;
+            gbc.gridy = 10;
+            gbc.anchor = GridBagConstraints.EAST;
+            gbc.insets = new Insets(20, 0, 0, 0);
+            enterButton = createButton("Enter");
+            enterButton.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    // Implement Field Use
+                    if (actionButton.equals("Add")) {
+                        if (selectedItem.equals("Student")) {
+                            System.out.println("Start");
+                            Student student = new Student(
+                                ef.get(0).getText(),
+                                Integer.parseInt(ef.get(1).getText()),
+                                ef.get(2).getText()
+                            );
+                            StudentController.insertStudent(student);
+                            System.out.println("Done");
+                        }
+                    }
+                    else
+                    {
+                        System.out.println(actionButton + " -- " + selectedItem);
+                    }
+                }
+            });
+            formsPanel.add(enterButton, gbc);
+        }
+
+        formsPanel.revalidate();
+        formsPanel.repaint();
+    }
 
     private void createButtons() {
         backButton = createButton("Back");
@@ -167,20 +185,12 @@ public class ManageScreen extends JFrame {
             }
         });
 
-        enterButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                // Process form data
-                JOptionPane.showMessageDialog(ManageScreen.this, "Form submitted successfully!");
-            }
-        });
-
         JPanel buttonPanel = new JPanel(new BorderLayout());
         buttonPanel.setBackground(new Color(240, 240, 240)); // Light gray background color
         buttonPanel.setPreferredSize(new Dimension(800, 50));
         buttonPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
         buttonPanel.add(backButton, BorderLayout.WEST);
-        buttonPanel.add(enterButton, BorderLayout.EAST);
 
         add(buttonPanel, BorderLayout.SOUTH);
     }

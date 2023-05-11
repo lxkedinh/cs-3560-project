@@ -4,7 +4,6 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import cs_3560_project.server.model.*;
-import jakarta.transaction.Transaction;
 
 public class DAO {
   private static SessionFactory factory =

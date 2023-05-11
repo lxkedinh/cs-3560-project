@@ -1,0 +1,27 @@
+package cs_3560_project.app;
+
+import java.util.LinkedList;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+
+public class FormSpecification {
+    public static LinkedList<JTextField> getTextFields(String formName, LinkedList<String> labels, JPanel formsPanel) {
+        int count = 0;
+        LinkedList<JTextField> fields = new LinkedList<>();
+
+        // Form title
+        FormHelper.makeLable(count, formName, formsPanel, true);
+        count++;
+
+        // Make form
+        for (int i = 0; i < labels.size(); i++)
+        {
+            FormHelper.makeLable(count, labels.get(i), formsPanel, false);
+            fields.add(FormHelper.makeField(count, formsPanel));
+
+            count++;
+        }
+
+        return fields;
+    }
+}

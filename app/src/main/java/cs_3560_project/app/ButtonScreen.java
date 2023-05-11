@@ -28,7 +28,7 @@ public class ButtonScreen extends JFrame {
         add(buttonPanel, BorderLayout.SOUTH); // Place the button panel at the bottom
 
         pack();
-        setSize(800, 600); // Set the preferred size of the JFrame
+        setSize(800, 700); // Set the preferred size of the JFrame
         setLocationRelativeTo(null);
     }
 
