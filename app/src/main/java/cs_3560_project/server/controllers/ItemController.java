@@ -33,12 +33,14 @@ public class ItemController {
     DAO.update(documentary);
   }
 
-  public static void deleteBook(Book book) {
-    DAO.delete(book);
+  public static void deleteBook(int code) throws EntityNotFoundException {
+    Book bookToDelete = DAO.read(Book.class, code);
+    DAO.delete(bookToDelete);
   }
 
-  public static void deleteDocumentary(Documentary documentary) {
-    DAO.delete(documentary);
+  public static void deleteDocumentary(int code) throws EntityNotFoundException {
+    Documentary documentaryToDelete = DAO.read(Documentary.class, code);
+    DAO.delete(documentaryToDelete);
   }
 
   public static <T extends Item> ItemStatus checkAvailability(Class<T> itemType, int code)

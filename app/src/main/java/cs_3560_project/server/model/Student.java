@@ -1,11 +1,8 @@
 package cs_3560_project.server.model;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -18,10 +15,6 @@ public class Student extends Person {
 
   @Column(name = "course")
   private String course;
-
-  @OneToOne(mappedBy = "student", cascade = CascadeType.PERSIST)
-  @JoinColumn(name = "loan_number")
-  private Loan loan;
 
   public Student() {};
 
@@ -39,10 +32,6 @@ public class Student extends Person {
     return course;
   }
 
-  public Loan getLoan() {
-    return loan;
-  }
-
   public void setBroncoId(int broncoId) {
     this.broncoId = broncoId;
   }
@@ -51,9 +40,5 @@ public class Student extends Person {
     this.course = course;
   }
 
-  public void setLoan(Loan loan) {
-    this.loan = loan;
-  }
-
-  // toString()
+  // TODO: toString()
 }

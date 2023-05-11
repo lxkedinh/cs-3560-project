@@ -23,8 +23,8 @@ public class Author extends Creator {
 
   public Author() {};
 
-  public Author(String name, String nationality, String subject) {
-    super(name, nationality);
+  public Author(String name, int id, String nationality, String subject) {
+    super(name, id, nationality);
     this.subject = subject;
   }
 
@@ -36,8 +36,8 @@ public class Author extends Creator {
     this.subject = subject;
   }
 
-  // createBook()
+  // TODO: createBook()
 
-  // listAllBooks()
+  // TODO: listAllBooks()
 
 }

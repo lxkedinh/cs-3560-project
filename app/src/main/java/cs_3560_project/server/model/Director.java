@@ -19,8 +19,8 @@ public class Director extends Creator {
 
   public Director() {};
 
-  public Director(String name, String nationality, String style) {
-    super(name, nationality);
+  public Director(String name, int id, String nationality, String style) {
+    super(name, id, nationality);
     this.style = style;
   }
 
@@ -32,8 +32,8 @@ public class Director extends Creator {
     this.style = style;
   }
 
-  // createDocumentary()
+  // TODO: createDocumentary()
 
-  // displayAllDocumentaries()
+  // TODO: displayAllDocumentaries()
 
 }

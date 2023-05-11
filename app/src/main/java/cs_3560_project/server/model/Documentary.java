@@ -27,10 +27,11 @@ public class Documentary extends Item {
   public Documentary() {};
 
   public Documentary(int code, String title, String description, String location, double dailyPrice,
-      ItemStatus status, double length, LocalDate releaseDate) {
+      ItemStatus status, double length, LocalDate releaseDate, Director director) {
     super(code, title, description, location, dailyPrice, status);
     this.length = length;
     this.releaseDate = releaseDate;
+    this.director = director;
   }
 
   public double getLength() {

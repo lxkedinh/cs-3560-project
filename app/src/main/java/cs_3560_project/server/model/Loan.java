@@ -3,7 +3,8 @@ package cs_3560_project.server.model;
 import java.time.LocalDate;
 import org.hibernate.annotations.Filter;
 import org.hibernate.annotations.FilterDef;
-import jakarta.persistence.CascadeType;
+import org.hibernate.annotations.ParamDef;
+import cs_3560_project.server.dao.EntityNotFoundException;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -11,8 +12,8 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
-@FilterDef(name = "overdueFilter")
-@Filter(name = "overdueFilter", condition = "is_overdue = TRUE")
+@FilterDef(name = "overdueFilter", parameters = @ParamDef(name = "date", type = LocalDate.class))
+@Filter(name = "overdueFilter", condition = "due_date < :date AND return_date IS NULL")
 
 @Entity
 @Table(name = "loan")
@@ -31,17 +32,14 @@ public class Loan {
   @Column(name = "return_date")
   private LocalDate returnDate;
 
-  @Column(name = "is_overdue")
-  private boolean isOverdue = false;
-
   @Column(name = "total_price")
   private double totalPrice;
 
-  @OneToOne(cascade = CascadeType.PERSIST)
+  @OneToOne
   @JoinColumn(name = "student_id")
   private Student student;
 
-  @OneToOne(cascade = CascadeType.PERSIST)
+  @OneToOne
   @JoinColumn(name = "item_code")
   private Item item;
 
@@ -109,25 +107,19 @@ public class Loan {
 
   // TODO: printReceipt()
 
-  public void calculateTotalPrice() {
-    LocalDate d = LocalDate.now();
+  public void calculateTotalPrice() throws EntityNotFoundException {
     if (!isOverDue()) {
-      int numDaysLoaned = d.compareTo(loanDate);
-      double onTimePrice = numDaysLoaned * item.getDailyPrice();
-      totalPrice = onTimePrice;
+      totalPrice = 0;
+      return;
     }
 
-    int loanPeriod = dueDate.compareTo(loanDate);
-    double priceBeforeLateFee = loanPeriod * item.getDailyPrice();
+    LocalDate d = LocalDate.now();
     int daysOverdue = d.compareTo(dueDate);
 
-    double lateFee = .1 * item.getDailyPrice() + (daysOverdue * item.getDailyPrice());
-
-    totalPrice = priceBeforeLateFee + lateFee;
+    totalPrice = 1.1 * daysOverdue * item.getDailyPrice();
   }
 
   public boolean isOverDue() {
-    isOverdue = LocalDate.now().compareTo(dueDate) > 0;
-    return isOverdue;
+    return LocalDate.now().compareTo(dueDate) > 0;
   }
 }

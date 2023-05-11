@@ -16,8 +16,9 @@ public class Creator extends Person {
 
   public Creator() {};
 
-  public Creator(String name, String nationality) {
+  public Creator(String name, int id, String nationality) {
     super(name);
+    this.id = id;
     this.nationality = nationality;
   }
 
