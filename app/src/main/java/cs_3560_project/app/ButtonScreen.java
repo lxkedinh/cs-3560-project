@@ -40,8 +40,11 @@ public class ButtonScreen extends JFrame {
         button.setForeground(new Color(60, 72, 107)); // Dark blue text color
 
         button.addActionListener(new ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                openManagementScreen();
+            public void actionPerformed(java.awt.event.ActionEvent event) {
+                if (label.equals("Loans"))
+                    openLoansScreen();
+                else if (label.equals("Management"))
+                    openManagementScreen();
             }
         });
 
@@ -57,6 +60,12 @@ public class ButtonScreen extends JFrame {
     private void openManagementScreen() {
         ManageScreen managementScreen = new ManageScreen();
         managementScreen.setVisible(true);
+        dispose(); // Close the main screen
+    }
+
+    private void openLoansScreen() {
+        LoansScreen loansScreen = new LoansScreen();
+        loansScreen.setVisible(true);
         dispose(); // Close the main screen
     }
 }

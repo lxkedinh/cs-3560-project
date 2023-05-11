@@ -212,7 +212,10 @@ public class PersonInformationScreen extends JFrame {
             gbc.gridy = 10;
             gbc.anchor = GridBagConstraints.EAST;
             gbc.insets = new Insets(20, 0, 0, 0);
-            enterButton = createButton("Enter");
+            if (actionButton.equals("Delete"))
+                enterButton = createButton("Confirm");
+            else
+                enterButton = createButton("Enter");
             enterButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     // Implement Field Use
