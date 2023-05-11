@@ -5,9 +5,9 @@ import javax.swing.*;
 import cs_3560_project.server.controllers.AuthorController;
 import cs_3560_project.server.controllers.DirectorController;
 import cs_3560_project.server.controllers.StudentController;
+import cs_3560_project.server.dao.EntityNotFoundException;
 import cs_3560_project.server.model.Author;
 import cs_3560_project.server.model.Director;
-import cs_3560_project.server.model.Person;
 import cs_3560_project.server.model.Student;
 
 import java.awt.*;
@@ -21,16 +21,13 @@ public class PersonInformationScreen extends JFrame {
     private JPanel formsPanel;
     private JButton backButton;
     private JButton enterButton;
-    private LinkedList<String> lablesInfo;
-    private LinkedList<JTextField> fieldsInfo;
-    private Person person;
-    private String type = "";
+    private Student student;
+    private Author author;
+    private Director director;
 
-    public PersonInformationScreen(LinkedList<String> lables, LinkedList<JTextField> fields, Person person, String type) {
-        this.lablesInfo = lables;
-        this.fieldsInfo = fields;
+    public void initilize() {
 
-        setTitle("Information Screen");
+        setTitle("Management Screen");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
@@ -38,8 +35,6 @@ public class PersonInformationScreen extends JFrame {
         mainPanel.setBackground(new Color(240, 240, 240)); // Light gray background color
 
         createButtonPanel();
-        updateButtonPanel(type);
-
         createFormsPanel();
         createButtons();
 
@@ -53,19 +48,41 @@ public class PersonInformationScreen extends JFrame {
         setLocationRelativeTo(null);
     }
 
+    public PersonInformationScreen(Student student) {
+        this.student = student;
+        initilize();
+    }
+
+    public PersonInformationScreen(Author author) {
+        this.author = author;
+        initilize();
+    }
+
+    public PersonInformationScreen(Director director) {
+        this.director = director;
+        initilize();
+    }
+
     private void createButtonPanel() {
         buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 20));
         buttonPanel.setBackground(new Color(240, 240, 240)); // Light gray background color
         buttonPanel.setPreferredSize(new Dimension(400, 100));
 
-        updateButtonPanel(null);
+        String selectedItem;
+        if (student != null)
+            selectedItem = "Student";
+        else if (author != null)
+            selectedItem = "Author";
+        else
+            selectedItem = "Director";
+        updateButtonPanel(selectedItem);
     }
 
     private void updateButtonPanel(String selectedItem) {
         buttonPanel.removeAll();
 
         if (selectedItem != null) {
-            String[] buttons = { "Update", "Delete" };
+            String[] buttons = { "Info", "Update", "Delete" };
             for (String buttonText : buttons) {
                 JButton button = createButton(buttonText);
                 button.addActionListener(new ActionListener() {
@@ -90,45 +107,46 @@ public class PersonInformationScreen extends JFrame {
         // Initialize the enterButton here
         enterButton = createButton("Enter");
 
-        refreshForm();
-    }
-
-    private void refreshForm() {
-        formsPanel.removeAll();
-
-        if (type.equals("Student")) {
-            FormSpecification.showInfo("Student: ", lablesInfo, fieldsInfo, formsPanel);
-        } else if (type.equals("Author")) {
-            FormSpecification.showInfo("Author: ", lablesInfo, fieldsInfo, formsPanel);
-        } else if (type.equals("Director")) {
-            FormSpecification.showInfo("Director: ", lablesInfo, fieldsInfo, formsPanel);
-        }
+        String selectedItem;
+        if (student != null)
+            selectedItem = "Student";
+        else if (author != null)
+            selectedItem = "Author";
+        else
+            selectedItem = "Director";
+        updateFormsPanel(selectedItem, "Info");
     }
 
     private void updateFormsPanel(String selectedItem, String actionButton) {
         formsPanel.removeAll();
         if (selectedItem != null && actionButton != null) {
-            LinkedList<JTextField> fields = new LinkedList<> ();
+            LinkedList<JTextField> fields = new LinkedList<>();
 
             // Implement Forms
-            if (actionButton.equals("Add"))
-            {
-                if (selectedItem.equals("Student"))
-                {
+            if (actionButton.equals("Info")) {
+                if (selectedItem.equals("Student")) {
                     LinkedList<String> lables = new LinkedList<>();
                     lables.add("Name: ");
                     lables.add("BroncoID: ");
                     lables.add("Course: ");
-                    fields = FormSpecification.getTextFields("Add Student", lables, formsPanel);
+                    LinkedList<String> data = new LinkedList<>();
+                    data.add(student.getName());
+                    data.add(Integer.toString(student.getBroncoId()));
+                    data.add(student.getCourse());
+                    FormSpecification.showInfo("Student", lables, data, formsPanel);
                 }
-                if (selectedItem.equals("Author"))
-                {
+                if (selectedItem.equals("Author")) {
                     LinkedList<String> lables = new LinkedList<>();
                     lables.add("ID: ");
                     lables.add("Name: ");
                     lables.add("Nationality: ");
                     lables.add("Subject: ");
-                    fields = FormSpecification.getTextFields("Add Author", lables, formsPanel);
+                    LinkedList<String> data = new LinkedList<>();
+                    data.add(Integer.toString(author.getId()));
+                    data.add(author.getName());
+                    data.add(author.getNationality());
+                    data.add(author.getSubject());
+                    FormSpecification.showInfo("Author", lables, data, formsPanel);
                 }
                 if (selectedItem.equals("Director")) {
                     LinkedList<String> lables = new LinkedList<>();
@@ -136,25 +154,52 @@ public class PersonInformationScreen extends JFrame {
                     lables.add("Name: ");
                     lables.add("Nationality: ");
                     lables.add("Style: ");
-                    fields = FormSpecification.getTextFields("Add Director", lables, formsPanel);
+                    LinkedList<String> data = new LinkedList<>();
+                    data.add(Integer.toString(director.getId()));
+                    data.add(director.getName());
+                    data.add(director.getNationality());
+                    data.add(director.getStyle());
+                    FormSpecification.showInfo("Director", lables, data, formsPanel);
                 }
             }
-            if (actionButton.equals("Search"))
-            {
+            if (actionButton.equals("Update")) {
                 if (selectedItem.equals("Student")) {
                     LinkedList<String> lables = new LinkedList<>();
-                    lables.add("Student ID: ");
-                    fields = FormSpecification.getTextFields("Search For Student", lables, formsPanel);
+                    lables.add("Name: ");
+                    lables.add("BroncoID: ");
+                    lables.add("Course: ");
+                    LinkedList<String> data = new LinkedList<>();
+                    data.add(student.getName());
+                    data.add(Integer.toString(student.getBroncoId()));
+                    data.add(student.getCourse());
+                    fields = FormSpecification.getTextDisplayFields("Update Student", lables, data, formsPanel);
                 }
                 if (selectedItem.equals("Author")) {
                     LinkedList<String> lables = new LinkedList<>();
-                    lables.add("Author ID: ");
-                    fields = FormSpecification.getTextFields("Search For Author", lables, formsPanel);
+                    lables.add("ID: ");
+                    lables.add("Name: ");
+                    lables.add("Nationality: ");
+                    lables.add("Subject: ");
+                    LinkedList<String> data = new LinkedList<>();
+                    data.add(Integer.toString(author.getId()));
+                    data.add(author.getName());
+                    data.add(author.getNationality());
+                    data.add(author.getSubject());
+                    fields = FormSpecification.getTextDisplayFields("Update Author", lables, data, formsPanel);
                 }
                 if (selectedItem.equals("Director")) {
                     LinkedList<String> lables = new LinkedList<>();
-                    lables.add("Director ID: ");
-                    fields = FormSpecification.getTextFields("Search For Director", lables, formsPanel);
+                    lables.add("ID: ");
+                    lables.add("Name: ");
+                    lables.add("Nationality: ");
+                    lables.add("Style: ");
+                    LinkedList<String> data = new LinkedList<>();
+                    data.add(Integer.toString(director.getId()));
+                    data.add(director.getName());
+                    data.add(director.getNationality());
+                    data.add(director.getStyle());
+                    FormSpecification.showInfo("Director", lables, data, formsPanel);
+                    fields = FormSpecification.getTextDisplayFields("Update Director", lables, data, formsPanel);
                 }
             }
 
@@ -171,81 +216,73 @@ public class PersonInformationScreen extends JFrame {
             enterButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     // Implement Field Use
-                    if (actionButton.equals("Add")) {
+                    if (actionButton.equals("Update")) {
                         if (selectedItem.equals("Student")) {
-                            Student student = new Student(
-                                ef.get(0).getText(),
-                                Integer.parseInt(ef.get(1).getText()),
-                                ef.get(2).getText()
-                            );
-                            StudentController.insertStudent(student);
-                            alert(student.getName() + " has been added!");
-                            clearFields(ef);
+                            student.setName(ef.get(0).getText());
+                            student.setBroncoId(Integer.parseInt(ef.get(1).getText()));
+                            student.setCourse(ef.get(2).getText());
+                            StudentController.updateStudent(student);
+                            updateFormsPanel(selectedItem, actionButton);
+                            alert(student.getName() + " has been updated!");
                         }
                         if (selectedItem.equals("Author")) {
-                            Author author = new Author(
-                                ef.get(1).getText(),
-                                Integer.parseInt(ef.get(0).getText()),
-                                ef.get(2).getText(),
-                                ef.get(3).getText());
-                            AuthorController.insertAuthor(author);
-                            alert(author.getName() + " has been added!");
-                            clearFields(ef);
+                            author.setName(ef.get(1).getText());
+                            author.setId(Integer.parseInt(ef.get(0).getText()));
+                            author.setNationality(ef.get(2).getText());
+                            author.setSubject(ef.get(3).getText());
+                            AuthorController.updateAuthor(author);
+                            updateFormsPanel(selectedItem, actionButton);
+                            alert(author.getName() + " has been updated!");
                         }
                         if (selectedItem.equals("Director")) {
-                            Director director = new Director(
-                                    ef.get(1).getText(),
-                                    Integer.parseInt(ef.get(0).getText()),
-                                    ef.get(2).getText(),
-                                    ef.get(3).getText());
-                            DirectorController.insertDirector(director);
-                            alert(director.getName() + " has been added!");
+                            director.setName(ef.get(1).getText());
+                            director.setId(Integer.parseInt(ef.get(0).getText()));
+                            director.setNationality(ef.get(2).getText());
+                            director.setStyle(ef.get(3).getText());
+                            DirectorController.updateDirector(director);
+                            alert(director.getName() + " has been updated!");
                             clearFields(ef);
                         }
                     }
-                    if (actionButton.equals("Search")) {
+                    if (actionButton.equals("Delete")) {
                         if (selectedItem.equals("Student")) {
-                            int id = Integer.parseInt(ef.get(0).getText());
                             try {
-                                Student student = StudentController.fetchStudent(id);
-                                alert(student.toString());
-                            }
-                            catch (Exception error) {
-                                alert("Student with ID: " + id + " was not found.");
-                                System.out.println(error.toString());
-                            }
-                            finally {
-                                clearFields(ef);
-                            }
+                                StudentController.deleteStudent(student.getBroncoId());
+                                // Go Bacl
+                                setVisible(false); 
+                                ManageScreen buttonScreen = new ManageScreen();
+                                buttonScreen.setVisible(true);
+                                // Output Message
+                                alert(student.getName() + " has been deleted.");
+                            } catch (EntityNotFoundException error) {}
                         }
                         if (selectedItem.equals("Author")) {
-                            int id = Integer.parseInt(ef.get(0).getText());
                             try {
-                                Author author = AuthorController.fetchAuthor(id);
-                                alert(author.toString());
-                            } catch (Exception error) {
-                                alert("Author with ID: " + id + " was not found.");
-                                System.out.println(error.toString());
-                            } finally {
-                                clearFields(ef);
-                            }
+                                AuthorController.deleteAuthor(author.getId());
+                                // Go Bacl
+                                setVisible(false);
+                                ManageScreen buttonScreen = new ManageScreen();
+                                buttonScreen.setVisible(true);
+                                // Output Message
+                                alert(author.getName() + " has been deleted.");
+                            } catch (EntityNotFoundException error) {}
                         }
                         if (selectedItem.equals("Director")) {
-                            int id = Integer.parseInt(ef.get(0).getText());
                             try {
-                                Director director = DirectorController.fetchDirector(id);
-                                alert(director.toString());
-                            } catch (Exception error) {
-                                alert("Director with ID: " + id + " was not found.");
-                                System.out.println(error.toString());
-                            } finally {
-                                clearFields(ef);
-                            }
+                                DirectorController.deleteDirector(director.getId());
+                                // Go Bacl
+                                setVisible(false);
+                                ManageScreen buttonScreen = new ManageScreen();
+                                buttonScreen.setVisible(true);
+                                // Output Message
+                                alert(director.getName() + " has been deleted.");
+                            } catch (EntityNotFoundException error) {}
                         }
                     }
                 }
             });
-            formsPanel.add(enterButton, gbc);
+            if (!actionButton.equals("Info"))
+                formsPanel.add(enterButton, gbc);
         }
 
         formsPanel.revalidate();
@@ -280,8 +317,7 @@ public class PersonInformationScreen extends JFrame {
         button.setBackground(new Color(240, 240, 240)); // Light gray background color
         if (label.equals("Back")) {
             button.setForeground(new Color(244, 80, 80));
-        }
-        else {
+        } else {
             button.setForeground(new Color(60, 72, 107)); // Dark blue text color
         }
         return button;
@@ -292,8 +328,7 @@ public class PersonInformationScreen extends JFrame {
     }
 
     public static void clearFields(LinkedList<JTextField> fields) {
-        for (int i = 0; i < fields.size(); i++)
-        {
+        for (int i = 0; i < fields.size(); i++) {
             fields.get(i).setText("");
         }
     }

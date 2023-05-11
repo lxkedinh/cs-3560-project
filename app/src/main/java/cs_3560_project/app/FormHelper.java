@@ -35,6 +35,18 @@ public class FormHelper {
         return field;
     }
 
+    public static JTextField makeDisplayField(int fieldNum, String text, JPanel formsPanel) {
+        gbc.gridx = 1;
+        gbc.gridy = 0 + fieldNum;
+        gbc.anchor = GridBagConstraints.WEST;
+        gbc.insets = new Insets(5, 0, 5, 0);
+
+        JTextField field = new JTextField(20);
+        field.setText(text);
+        formsPanel.add(field, gbc);
+        return field;
+    }
+
     public static void makeInfo(int fieldNum, String labelName, JPanel formsPanel) {
         gbc.gridx = 1;
         gbc.gridy = 0 + fieldNum;

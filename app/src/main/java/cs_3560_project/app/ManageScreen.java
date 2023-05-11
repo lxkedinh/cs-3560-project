@@ -226,12 +226,7 @@ public class ManageScreen extends JFrame {
                             int id = Integer.parseInt(ef.get(0).getText());
                             try {
                                 Student student = StudentController.fetchStudent(id);
-                                LinkedList<String> lables = new LinkedList<>();
-                                lables.add("ID: ");
-                                lables.add("Name: ");
-                                lables.add("Nationality: ");
-                                lables.add("Style: ");
-                                PersonInformationScreen infoScreen = new PersonInformationScreen(lables, ef, student, "Student");
+                                PersonInformationScreen infoScreen = new PersonInformationScreen(student);
                                 infoScreen.setVisible(true);
                                 dispose();
                             }
@@ -247,7 +242,9 @@ public class ManageScreen extends JFrame {
                             int id = Integer.parseInt(ef.get(0).getText());
                             try {
                                 Author author = AuthorController.fetchAuthor(id);
-                                alert(author.toString());
+                                PersonInformationScreen infoScreen = new PersonInformationScreen(author);
+                                infoScreen.setVisible(true);
+                                dispose();
                             } catch (Exception error) {
                                 alert("Author with ID: " + id + " was not found.");
                                 System.out.println(error.toString());
@@ -259,7 +256,9 @@ public class ManageScreen extends JFrame {
                             int id = Integer.parseInt(ef.get(0).getText());
                             try {
                                 Director director = DirectorController.fetchDirector(id);
-                                alert(director.toString());
+                                PersonInformationScreen infoScreen = new PersonInformationScreen(director);
+                                infoScreen.setVisible(true);
+                                dispose();
                             } catch (Exception error) {
                                 alert("Director with ID: " + id + " was not found.");
                                 System.out.println(error.toString());
