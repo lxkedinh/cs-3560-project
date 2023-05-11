@@ -27,10 +27,11 @@ public class Documentary extends Item {
   public Documentary() {};
 
   public Documentary(int code, String title, String description, String location, double dailyPrice,
-      ItemStatus status, double length, LocalDate releaseDate) {
+      ItemStatus status, double length, LocalDate releaseDate, Director director) {
     super(code, title, description, location, dailyPrice, status);
     this.length = length;
     this.releaseDate = releaseDate;
+    this.director = director;
   }
 
   public double getLength() {
@@ -55,19 +56,5 @@ public class Documentary extends Item {
 
   public void setDirector(Director director) {
     this.director = director;
-  }
-
-  @Override
-  public String toString() {
-    return "Code: " + super.getCode() + "\n" +
-        "Title: " + super.getTitle() + "\n" +
-        "Description: " + super.getDescription() + "\n" +
-        "Location: " + super.getLocation() + "\n" +
-        "Daily Price: " + super.getDailyPrice() + "\n" +
-        "Status: " + super.getStatus() + "\n" +
-        "Loan: \n" + super.getLoan() + "\n" +
-        "Length: " + length + "\n" +
-        "Release Date: " + releaseDate + "\n" +
-        "Director: \n" + director + "\n";
   }
 }

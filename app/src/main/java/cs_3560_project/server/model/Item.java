@@ -1,17 +1,12 @@
 package cs_3560_project.server.model;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -20,7 +15,6 @@ import jakarta.persistence.Table;
 public class Item {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "code")
   private int code;
 
@@ -39,10 +33,6 @@ public class Item {
   @Enumerated(EnumType.STRING)
   @Column(name = "status")
   private ItemStatus status;
-
-  @OneToOne(mappedBy = "item", cascade = CascadeType.PERSIST)
-  @JoinColumn(name = "loan_number")
-  private Loan loan;
 
   public Item() {};
 
@@ -80,10 +70,6 @@ public class Item {
     return status;
   }
 
-  public Loan getLoan() {
-    return loan;
-  }
-
   public void setCode(int code) {
     this.code = code;
   }
@@ -108,9 +94,5 @@ public class Item {
     this.status = status;
   }
 
-  public void setLoan(Loan loan) {
-    this.loan = loan;
-  }
-
-  // toString()
+  // TODO: toString()
 }

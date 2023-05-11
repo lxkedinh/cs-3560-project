@@ -7,6 +7,7 @@ import cs_3560_project.server.controllers.DirectorController;
 import cs_3560_project.server.controllers.StudentController;
 import cs_3560_project.server.model.Author;
 import cs_3560_project.server.model.Director;
+import cs_3560_project.server.model.Person;
 import cs_3560_project.server.model.Student;
 
 import java.awt.*;
@@ -14,28 +15,34 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.LinkedList;
 
-public class ManageScreen extends JFrame {
+public class PersonInformationScreen extends JFrame {
     private JPanel mainPanel;
-    private JComboBox<String> dropdown;
     private JPanel buttonPanel;
     private JPanel formsPanel;
     private JButton backButton;
     private JButton enterButton;
+    private LinkedList<String> lablesInfo;
+    private LinkedList<JTextField> fieldsInfo;
+    private Person person;
+    private String type = "";
 
-    public ManageScreen() {
-        setTitle("Management Screen");
+    public PersonInformationScreen(LinkedList<String> lables, LinkedList<JTextField> fields, Person person, String type) {
+        this.lablesInfo = lables;
+        this.fieldsInfo = fields;
+
+        setTitle("Information Screen");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
         mainPanel = new JPanel(new BorderLayout());
         mainPanel.setBackground(new Color(240, 240, 240)); // Light gray background color
 
-        createDropdown();
         createButtonPanel();
+        updateButtonPanel(type);
+
         createFormsPanel();
         createButtons();
 
-        mainPanel.add(dropdown, BorderLayout.NORTH);
         mainPanel.add(buttonPanel, BorderLayout.CENTER);
         mainPanel.add(formsPanel, BorderLayout.SOUTH);
 
@@ -44,43 +51,6 @@ public class ManageScreen extends JFrame {
         pack();
         setSize(800, 700); // Set the preferred size of the JFrame
         setLocationRelativeTo(null);
-    }
-
-    private void createDropdown() {
-        DefaultListCellRenderer renderer = new DefaultListCellRenderer() {
-            @Override
-            public Component getListCellRendererComponent(JList<?> list, Object value, int index,
-                    boolean isSelected, boolean cellHasFocus) {
-                Component component = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-
-                if (isSelected) {
-                    component.setBackground(new Color(60, 72, 107)); // Set your desired highlight color
-                    component.setForeground(new Color(240, 240, 240)); // Set the text color
-                } else {
-                    component.setBackground(list.getBackground());
-                    component.setForeground(list.getForeground());
-                }
-
-                return component;
-            }
-        };
-
-        dropdown = new JComboBox<>(new String[] { "Select Role", "Student", "Author", "Director" });
-        dropdown.setRenderer(renderer);
-        dropdown.setPreferredSize(new Dimension(50, 50));
-        dropdown.setFont(new Font("Arial", Font.BOLD, 16));
-        dropdown.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                if (!dropdown.getSelectedItem().equals("Select Role"))
-                {
-                    String selectedItem = (String) dropdown.getSelectedItem();
-                    updateButtonPanel(selectedItem);
-                    formsPanel.removeAll();
-                }
-            }
-        });
-        dropdown.setAlignmentX(Component.CENTER_ALIGNMENT);
-        dropdown.setSelectedItem("Select Role");
     }
 
     private void createButtonPanel() {
@@ -95,7 +65,7 @@ public class ManageScreen extends JFrame {
         buttonPanel.removeAll();
 
         if (selectedItem != null) {
-            String[] buttons = { "Add", "Search" };
+            String[] buttons = { "Update", "Delete" };
             for (String buttonText : buttons) {
                 JButton button = createButton(buttonText);
                 button.addActionListener(new ActionListener() {
@@ -120,7 +90,19 @@ public class ManageScreen extends JFrame {
         // Initialize the enterButton here
         enterButton = createButton("Enter");
 
-        updateFormsPanel(null, null);
+        refreshForm();
+    }
+
+    private void refreshForm() {
+        formsPanel.removeAll();
+
+        if (type.equals("Student")) {
+            FormSpecification.showInfo("Student: ", lablesInfo, fieldsInfo, formsPanel);
+        } else if (type.equals("Author")) {
+            FormSpecification.showInfo("Author: ", lablesInfo, fieldsInfo, formsPanel);
+        } else if (type.equals("Director")) {
+            FormSpecification.showInfo("Director: ", lablesInfo, fieldsInfo, formsPanel);
+        }
     }
 
     private void updateFormsPanel(String selectedItem, String actionButton) {
@@ -226,14 +208,7 @@ public class ManageScreen extends JFrame {
                             int id = Integer.parseInt(ef.get(0).getText());
                             try {
                                 Student student = StudentController.fetchStudent(id);
-                                LinkedList<String> lables = new LinkedList<>();
-                                lables.add("ID: ");
-                                lables.add("Name: ");
-                                lables.add("Nationality: ");
-                                lables.add("Style: ");
-                                PersonInformationScreen infoScreen = new PersonInformationScreen(lables, ef, student, "Student");
-                                infoScreen.setVisible(true);
-                                dispose();
+                                alert(student.toString());
                             }
                             catch (Exception error) {
                                 alert("Student with ID: " + id + " was not found.");
@@ -283,7 +258,7 @@ public class ManageScreen extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 setVisible(false); // Hide the current window
                 // Show the previous window (assuming it's an instance of ButtonScreen)
-                ButtonScreen buttonScreen = new ButtonScreen();
+                ManageScreen buttonScreen = new ManageScreen();
                 buttonScreen.setVisible(true);
             }
         });

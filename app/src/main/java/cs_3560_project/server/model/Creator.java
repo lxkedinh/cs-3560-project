@@ -1,8 +1,6 @@
 package cs_3560_project.server.model;
 
 import jakarta.persistence.Column;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
 
@@ -10,7 +8,6 @@ import jakarta.persistence.MappedSuperclass;
 public class Creator extends Person {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "id")
   private int id;
 
@@ -19,8 +16,9 @@ public class Creator extends Person {
 
   public Creator() {};
 
-  public Creator(String name, String nationality) {
+  public Creator(String name, int id, String nationality) {
     super(name);
+    this.id = id;
     this.nationality = nationality;
   }
 

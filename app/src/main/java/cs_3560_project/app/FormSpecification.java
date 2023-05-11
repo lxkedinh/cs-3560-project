@@ -24,4 +24,20 @@ public class FormSpecification {
 
         return fields;
     }
+
+    public static void showInfo(String formName, LinkedList<String> labels, LinkedList<JTextField> fields, JPanel formsPanel) {
+        int count = 0;
+
+        // Form title
+        FormHelper.makeLable(count, formName, formsPanel, true);
+        count++;
+
+        // Make form
+        for (int i = 0; i < labels.size(); i++) {
+            FormHelper.makeLable(count, labels.get(i), formsPanel, false);
+            FormHelper.makeInfo(count, formName, formsPanel);
+
+            count++;
+        }
+    }
 }

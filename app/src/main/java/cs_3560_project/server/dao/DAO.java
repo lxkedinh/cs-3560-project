@@ -1,6 +1,5 @@
 package cs_3560_project.server.dao;
 
-import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import cs_3560_project.server.model.*;
@@ -26,14 +25,9 @@ public class DAO {
    * @param newEntity - entity to save to database
    */
   public static <T> void create(T newEntity) {
-
-    Session session = factory.openSession();
-    org.hibernate.Transaction transaction = session.beginTransaction();
-
-    session.persist(newEntity);
-
-    transaction.commit();
-    session.close();
+    factory.inTransaction(session -> {
+      session.persist(newEntity);
+    });
   }
 
   /**

@@ -23,13 +23,13 @@ public class StudentController {
     DAO.delete(studentToDelete);
   }
 
-  public static boolean hasCurrentLoans(int broncoId) throws EntityNotFoundException {
-    Student studentToCheck = DAO.read(Student.class, broncoId);
-    return studentToCheck.getLoan() != null;
-  }
+  // public static boolean hasCurrentLoans(int broncoId) throws EntityNotFoundException {
+  // Student studentToCheck = DAO.read(Student.class, broncoId);
+  // return studentToCheck.getLoan() != null;
+  // }
 
-  public static boolean hasOverdueLoans(int broncoId) throws EntityNotFoundException {
-    Student studentToCheck = DAO.read(Student.class, broncoId);
-    return studentToCheck.getLoan() != null && studentToCheck.getLoan().isOverDue();
-  }
+  // public static boolean hasOverdueLoans(int broncoId) throws EntityNotFoundException {
+  // Student studentToCheck = DAO.read(Student.class, broncoId);
+  // return studentToCheck.getLoan() != null && studentToCheck.getLoan().isOverDue();
+  // }
 }
