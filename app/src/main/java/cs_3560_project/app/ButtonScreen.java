@@ -45,6 +45,8 @@ public class ButtonScreen extends JFrame {
                     openLoansScreen();
                 else if (label.equals("Management"))
                     openManagementScreen();
+                else if (label.equals("Inventory"))
+                    openInventoryScreen();
             }
         });
 
@@ -61,6 +63,12 @@ public class ButtonScreen extends JFrame {
         ManageScreen managementScreen = new ManageScreen();
         managementScreen.setVisible(true);
         dispose(); // Close the main screen
+    }
+
+    private void openInventoryScreen() {
+        InventoryScreen inventoryScreen = new InventoryScreen();
+        inventoryScreen.setVisible(true);
+        dispose();
     }
 
     private void openLoansScreen() {

@@ -27,7 +27,7 @@ public class PersonInformationScreen extends JFrame {
 
     public void initilize() {
 
-        setTitle("Management Screen");
+        setTitle("Information Screen");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 

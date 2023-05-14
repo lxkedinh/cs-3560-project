@@ -17,6 +17,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.LinkedList;
+import java.util.List;
 
 public class LoansScreen extends JFrame {
     private JPanel mainPanel;
@@ -98,7 +99,7 @@ public class LoansScreen extends JFrame {
         buttonPanel.removeAll();
 
         if (selectedItem != null) {
-            String[] buttons = { "Add", "Search", "Overdue" };
+            String[] buttons = { "Add", "Search", "All Loans", "Overdue" };
             for (String buttonText : buttons) {
                 JButton button = createButton(buttonText);
                 button.addActionListener(new ActionListener() {
@@ -141,7 +142,9 @@ public class LoansScreen extends JFrame {
                     fields = FormSpecification.getTextFields("Add Loan", lables, formsPanel);
                 }
                 if (actionButton.equals("Search")) {
-
+                    LinkedList<String> lables = new LinkedList<>();
+                    lables.add("Student ID: ");
+                    fields = FormSpecification.getTextFields("Search For Loan", lables, formsPanel);
                 }
                 if (actionButton.equals("Overdue")) {
 
@@ -157,7 +160,10 @@ public class LoansScreen extends JFrame {
             gbc.gridy = 10;
             gbc.anchor = GridBagConstraints.EAST;
             gbc.insets = new Insets(20, 0, 0, 0);
-            enterButton = createButton("Enter");
+            if (actionButton.equals("All Loans"))
+                enterButton = createButton("Show");
+            else
+                enterButton = createButton("Enter");
             enterButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     // Implement Field Use
@@ -216,8 +222,11 @@ public class LoansScreen extends JFrame {
                                 }
                             }
                         }
-                        if (actionButton.equals("Search")) {
-                            
+                        if (actionButton.equals("All Loans")) {
+                            List<Loan> loans = LoanController.fetchAllLoans();
+                            LoanInformationScreen infoScreen = new LoanInformationScreen(loans);
+                            infoScreen.setVisible(true);
+                            dispose();
                         }
                         if (actionButton.equals("Overdue")) {
 

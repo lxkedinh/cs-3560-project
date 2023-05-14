@@ -1,6 +1,8 @@
 package cs_3560_project.server.model;
 
+import java.util.LinkedList;
 import java.util.List;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -22,6 +24,7 @@ public class Director extends Creator {
   public Director(String name, int id, String nationality, String style) {
     super(name, id, nationality);
     this.style = style;
+    documentaries = new LinkedList<>();
   }
 
   public String getStyle() {
@@ -30,6 +33,16 @@ public class Director extends Creator {
 
   public void setStyle(String style) {
     this.style = style;
+  }
+
+  public void addDocumentary(Documentary documentary)
+  {
+    this.documentaries.add(documentary);
+  }
+
+  public void removeDocumentary(Documentary documentary)
+  {
+    this.documentaries.remove(this.documentaries.indexOf(documentary));
   }
 
   // TODO: createDocumentary()

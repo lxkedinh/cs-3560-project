@@ -29,7 +29,6 @@ public class LoanController {
     DAO.delete(loanToDelete);
   }
 
-  // TODO: fetch all overdue loans
   public static List<Loan> fetchOverdueLoans() {
     var loansWrapper = new Object() {
       List<Loan> overdueLoans = null;
@@ -38,6 +37,20 @@ public class LoanController {
     SessionFactory factory = DAO.getFactory();
     factory.inTransaction(session -> {
       session.enableFilter("overdueFilter");
+      CriteriaQuery<Loan> criteria = session.getCriteriaBuilder().createQuery(Loan.class);
+      loansWrapper.overdueLoans = session.createQuery(criteria).getResultList();
+    });
+
+    return loansWrapper.overdueLoans;
+  }
+
+  public static List<Loan> fetchAllLoans() {
+    var loansWrapper = new Object() {
+      List<Loan> overdueLoans = null;
+    };
+
+    SessionFactory factory = DAO.getFactory();
+    factory.inTransaction(session -> {
       CriteriaQuery<Loan> criteria = session.getCriteriaBuilder().createQuery(Loan.class);
       loansWrapper.overdueLoans = session.createQuery(criteria).getResultList();
     });

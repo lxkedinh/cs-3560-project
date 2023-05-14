@@ -1,10 +1,13 @@
 package cs_3560_project.server.model;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.PrimaryKeyJoinColumn;
 import jakarta.persistence.Table;
@@ -23,17 +26,21 @@ public class Book extends Item {
   @Column(name = "publication_date")
   private LocalDate publicationDate;
 
-  @ManyToMany(mappedBy = "books", cascade = CascadeType.PERSIST)
+  @ManyToMany(fetch = FetchType.EAGER)
+  @JoinTable(name = "author_book", joinColumns = @JoinColumn(name = "item_code"), inverseJoinColumns = @JoinColumn(name = "author_id"))
   private List<Author> authors;
 
-  public Book() {};
+  public Book() {
+    this.authors = new ArrayList<>();
+  }
 
   public Book(int code, String title, String description, String location, double dailyPrice,
-      ItemStatus status, int pages, String publisher, LocalDate publicationDate) {
+      ItemStatus status, int pages, String publisher, LocalDate publicationDate, List<Author> authors) {
     super(code, title, description, location, dailyPrice, status);
     this.pages = pages;
     this.publisher = publisher;
     this.publicationDate = publicationDate;
+    this.authors = authors;
   }
 
   public int getPages() {

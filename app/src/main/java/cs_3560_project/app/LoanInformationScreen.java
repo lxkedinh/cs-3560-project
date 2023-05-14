@@ -7,23 +7,28 @@ import cs_3560_project.server.controllers.DirectorController;
 import cs_3560_project.server.controllers.StudentController;
 import cs_3560_project.server.model.Author;
 import cs_3560_project.server.model.Director;
+import cs_3560_project.server.model.Loan;
 import cs_3560_project.server.model.Student;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.LinkedList;
+import java.util.List;
 
-public class ManageScreen extends JFrame {
+public class LoanInformationScreen extends JFrame {
     private JPanel mainPanel;
     private JComboBox<String> dropdown;
     private JPanel buttonPanel;
     private JPanel formsPanel;
     private JButton backButton;
     private JButton enterButton;
+    private List<Loan> loans;
 
-    public ManageScreen() {
-        setTitle("Management Screen");
+    public LoanInformationScreen(List<Loan> loans) {
+        this.loans = loans;
+
+        setTitle("Information Screen");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
@@ -65,14 +70,19 @@ public class ManageScreen extends JFrame {
             }
         };
 
-        dropdown = new JComboBox<>(new String[] { "Select Role", "Student", "Author", "Director" });
+        // Get dropdown
+        LinkedList<String> options = new LinkedList<>();
+        options.add("Select Loan");
+        for (int i = 0; i < loans.size(); i++) {
+            options.add("Loan Result " + i + 1);
+        }
+        dropdown = new JComboBox<>(options.toArray(new String[options.size()]));
         dropdown.setRenderer(renderer);
         dropdown.setPreferredSize(new Dimension(50, 50));
         dropdown.setFont(new Font("Arial", Font.BOLD, 16));
         dropdown.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                if (!dropdown.getSelectedItem().equals("Select Role"))
-                {
+                if (!dropdown.getSelectedItem().equals("Select Loan")) {
                     String selectedItem = (String) dropdown.getSelectedItem();
                     updateButtonPanel(selectedItem);
                     formsPanel.removeAll();
@@ -80,7 +90,7 @@ public class ManageScreen extends JFrame {
             }
         });
         dropdown.setAlignmentX(Component.CENTER_ALIGNMENT);
-        dropdown.setSelectedItem("Select Role");
+        dropdown.setSelectedItem("Select Loan");
     }
 
     private void createButtonPanel() {
@@ -126,21 +136,18 @@ public class ManageScreen extends JFrame {
     private void updateFormsPanel(String selectedItem, String actionButton) {
         formsPanel.removeAll();
         if (selectedItem != null && actionButton != null) {
-            LinkedList<JTextField> fields = new LinkedList<> ();
+            LinkedList<JTextField> fields = new LinkedList<>();
 
             // Implement Forms
-            if (actionButton.equals("Add"))
-            {
-                if (selectedItem.equals("Student"))
-                {
+            if (actionButton.equals("Add")) {
+                if (selectedItem.equals("Student")) {
                     LinkedList<String> lables = new LinkedList<>();
                     lables.add("Name: ");
                     lables.add("BroncoID: ");
                     lables.add("Course: ");
                     fields = FormSpecification.getTextFields("Add Student", lables, formsPanel);
                 }
-                if (selectedItem.equals("Author"))
-                {
+                if (selectedItem.equals("Author")) {
                     LinkedList<String> lables = new LinkedList<>();
                     lables.add("ID: ");
                     lables.add("Name: ");
@@ -157,8 +164,7 @@ public class ManageScreen extends JFrame {
                     fields = FormSpecification.getTextFields("Add Director", lables, formsPanel);
                 }
             }
-            if (actionButton.equals("Search"))
-            {
+            if (actionButton.equals("Search")) {
                 if (selectedItem.equals("Student")) {
                     LinkedList<String> lables = new LinkedList<>();
                     lables.add("Student ID: ");
@@ -191,74 +197,33 @@ public class ManageScreen extends JFrame {
                     // Implement Field Use
                     if (actionButton.equals("Add")) {
                         if (selectedItem.equals("Student")) {
-                            try {
-                                // Get id
-                                int id = Integer.parseInt(ef.get(1).getText());
-
-                                Student student = new Student(
+                            Student student = new Student(
                                     ef.get(0).getText(),
-                                    id,
-                                    ef.get(2).getText()
-                                );
-                                try {
-                                    StudentController.insertStudent(student);
-                                }
-                                catch (Exception error) {
-                                    throw new Exception("");
-                                }
-                                alert(student.getName() + " has been added!");
-                                clearFields(ef);
-                            } catch (NumberFormatException error) {
-                                alert("Student Bronco ID must only be Integers.");
-                                ef.get(1).setText("");
-                            } catch (Exception error) {
-                                alert("A Student with the Bronco ID " + ef.get(1).getText() + " already exists.");
-                                ef.get(1).setText("");
-                            }
+                                    Integer.parseInt(ef.get(1).getText()),
+                                    ef.get(2).getText());
+                            StudentController.insertStudent(student);
+                            alert(student.getName() + " has been added!");
+                            clearFields(ef);
                         }
                         if (selectedItem.equals("Author")) {
-                            try {
-                                Author author = new Author(
+                            Author author = new Author(
                                     ef.get(1).getText(),
                                     Integer.parseInt(ef.get(0).getText()),
                                     ef.get(2).getText(),
                                     ef.get(3).getText());
-                                try {
-                                    AuthorController.insertAuthor(author);
-                                } catch (Exception error) {
-                                    throw new Exception("");
-                                }
-                                alert(author.getName() + " has been added!");
-                                clearFields(ef);
-                            } catch (NumberFormatException error) {
-                                alert("Author ID must only be Integers.");
-                                ef.get(0).setText("");
-                            } catch (Exception error) {
-                                alert("An Author with the ID " + ef.get(0).getText() + " already exists.");
-                                ef.get(1).setText("");
-                            }
+                            AuthorController.insertAuthor(author);
+                            alert(author.getName() + " has been added!");
+                            clearFields(ef);
                         }
                         if (selectedItem.equals("Director")) {
-                            try {
-                                Director director = new Director(
-                                        ef.get(1).getText(),
-                                        Integer.parseInt(ef.get(0).getText()),
-                                        ef.get(2).getText(),
-                                        ef.get(3).getText());
-                                try {
-                                    DirectorController.insertDirector(director);
-                                } catch (Exception error) {
-                                    throw new Exception("");
-                                }
-                                alert(director.getName() + " has been added!");
-                                clearFields(ef);
-                            } catch (NumberFormatException error) {
-                                alert("Director ID must only be Integers.");
-                                ef.get(0).setText("");
-                            } catch (Exception error) {
-                                alert("A Director with the ID " + ef.get(0).getText() + " already exists.");
-                                ef.get(1).setText("");
-                            }
+                            Director director = new Director(
+                                    ef.get(1).getText(),
+                                    Integer.parseInt(ef.get(0).getText()),
+                                    ef.get(2).getText(),
+                                    ef.get(3).getText());
+                            DirectorController.insertDirector(director);
+                            alert(director.getName() + " has been added!");
+                            clearFields(ef);
                         }
                     }
                     if (actionButton.equals("Search")) {
@@ -269,12 +234,10 @@ public class ManageScreen extends JFrame {
                                 PersonInformationScreen infoScreen = new PersonInformationScreen(student);
                                 infoScreen.setVisible(true);
                                 dispose();
-                            }
-                            catch (Exception error) {
+                            } catch (Exception error) {
                                 alert("Student with ID: " + id + " was not found.");
                                 System.out.println(error.toString());
-                            }
-                            finally {
+                            } finally {
                                 clearFields(ef);
                             }
                         }
@@ -322,8 +285,8 @@ public class ManageScreen extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 setVisible(false); // Hide the current window
                 // Show the previous window (assuming it's an instance of ButtonScreen)
-                ButtonScreen buttonScreen = new ButtonScreen();
-                buttonScreen.setVisible(true);
+                LoansScreen loansScreen = new LoansScreen();
+                loansScreen.setVisible(true);
             }
         });
 
@@ -344,8 +307,7 @@ public class ManageScreen extends JFrame {
         button.setBackground(new Color(240, 240, 240)); // Light gray background color
         if (label.equals("Back")) {
             button.setForeground(new Color(244, 80, 80));
-        }
-        else {
+        } else {
             button.setForeground(new Color(60, 72, 107)); // Dark blue text color
         }
         return button;
@@ -356,8 +318,7 @@ public class ManageScreen extends JFrame {
     }
 
     public static void clearFields(LinkedList<JTextField> fields) {
-        for (int i = 0; i < fields.size(); i++)
-        {
+        for (int i = 0; i < fields.size(); i++) {
             fields.get(i).setText("");
         }
     }
