@@ -163,12 +163,12 @@ public class InventoryScreen extends JFrame {
             if (actionButton.equals("Search")) {
                 if (selectedItem.equals("Documentary")) {
                     LinkedList<String> lables = new LinkedList<>();
-                    lables.add("Documentary ID: ");
+                    lables.add("Documentary Code: ");
                     fields = FormSpecification.getTextFields("Search For Documentary", lables, formsPanel);
                 }
                 if (selectedItem.equals("Book")) {
                     LinkedList<String> lables = new LinkedList<>();
-                    lables.add("Book ID: ");
+                    lables.add("Book Code: ");
                     fields = FormSpecification.getTextFields("Search For Book", lables, formsPanel);
                 }
             }

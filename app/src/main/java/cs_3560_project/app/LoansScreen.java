@@ -14,6 +14,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.time.LocalDate;
+import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.LinkedList;
@@ -139,15 +140,27 @@ public class LoansScreen extends JFrame {
                     lables.add("Due Date (MM/DD/YYYY): ");
                     lables.add("Student ID: ");
                     lables.add("Book Code: ");
-                    fields = FormSpecification.getTextFields("Add Loan", lables, formsPanel);
+                    fields = FormSpecification.getTextFields("Add Book Loan", lables, formsPanel);
                 }
                 if (actionButton.equals("Search")) {
                     LinkedList<String> lables = new LinkedList<>();
-                    lables.add("Student ID: ");
-                    fields = FormSpecification.getTextFields("Search For Loan", lables, formsPanel);
+                    lables.add("Book Loan ID: ");
+                    fields = FormSpecification.getTextFields("Search For Book Loan", lables, formsPanel);
                 }
-                if (actionButton.equals("Overdue")) {
-
+            }
+            else if (selectedItem.equals("Documentaries")) {
+                if (actionButton.equals("Add")) {
+                    LinkedList<String> lables = new LinkedList<>();
+                    lables.add("Number: ");
+                    lables.add("Due Date (MM/DD/YYYY): ");
+                    lables.add("Student ID: ");
+                    lables.add("Documentary Code: ");
+                    fields = FormSpecification.getTextFields("Add Documentary Loan", lables, formsPanel);
+                }
+                if (actionButton.equals("Search")) {
+                    LinkedList<String> lables = new LinkedList<>();
+                    lables.add("Documentary Loan ID: ");
+                    fields = FormSpecification.getTextFields("Search For Documentary Loan", lables, formsPanel);
                 }
             }
 
@@ -162,6 +175,8 @@ public class LoansScreen extends JFrame {
             gbc.insets = new Insets(20, 0, 0, 0);
             if (actionButton.equals("All Loans"))
                 enterButton = createButton("Show");
+            else if (actionButton.equals("Overdue"))
+                enterButton = createButton("Show");
             else
                 enterButton = createButton("Enter");
             enterButton.addActionListener(new ActionListener() {
@@ -174,6 +189,12 @@ public class LoansScreen extends JFrame {
                                 LocalDate dueDate = getDate(ef.get(1).getText());
                                 if (dueDate == null)
                                     throw new Exception("Date");
+
+                                // Check 6 months
+                                Period period = Period.between(dueDate, LocalDate.now());
+                                long months = period.toTotalMonths();
+                                if (Math.toIntExact(months) > 6)
+                                    throw new Exception("Months");
 
                                 // Get student
                                 Student student;
@@ -191,24 +212,42 @@ public class LoansScreen extends JFrame {
                                     throw new Exception("Book");
                                 }
 
-                                Loan loan = new Loan(
+                                // Get status
+                                if (book.getStatus() == ItemStatus.Borrowed)
+                                    throw new Exception("Borrowed");
+
+                                Loan loan;
+                                try {
+                                    loan = new Loan(
                                         Integer.parseInt(ef.get(0).getText()),
                                         LocalDate.now(),
                                         dueDate,
                                         student,
                                         book
-                                        );
-
-                                book.setStatus(ItemStatus.Borrowed);
-                                LoanController.insertLoan(loan);
-                                alert("Loan has been added!");
-                                clearFields(ef);
+                                    );
+                                    book.setStatus(ItemStatus.Borrowed);
+                                    LoanController.insertLoan(loan);
+                                    ItemController.updateBook(book);
+                                    showReciept(loan);
+                                    clearFields(ef);
+                                } catch (Exception error) {
+                                    throw new Exception("Loan");
+                                }
                             }
                             catch(Exception error) {
                                 if (error.getMessage().equals("Date"))
                                 {
                                     alert("Due Date was not entered correctly.");
                                     ef.get(1).setText("");
+                                }
+                                else if (error.getMessage().equals("Months"))
+                                {
+                                    alert("Borrow period cannot be more than 6 months.");
+                                    ef.get(1).setText("");
+                                }
+                                else if (error.getMessage().equals("Borrowed")) {
+                                    alert("The Book with ID: " + ef.get(3).getText() + " is currently being Borrowed.");
+                                    ef.get(3).setText("");
                                 }
                                 else if (error.getMessage().equals("Student"))
                                 {
@@ -220,17 +259,39 @@ public class LoansScreen extends JFrame {
                                     alert("Book was not found.");
                                     ef.get(3).setText("");
                                 }
+                                else if (error.getMessage().equals("Loan")) {
+                                    alert("Book Loan with ID " + ef.get(0).getText() + " already exists.");
+                                    ef.get(0).setText("");
+                                }
                             }
                         }
                         if (actionButton.equals("All Loans")) {
-                            List<Loan> loans = LoanController.fetchAllLoans();
-                            LoanInformationScreen infoScreen = new LoanInformationScreen(loans);
-                            infoScreen.setVisible(true);
-                            dispose();
+                            // List<Loan> loans = LoanController.fetchAllLoans();
+                            // List<Loan> bookLoans = new LinkedList<>();
+                            // for (int i = 0; i < loans.size(); i++) {
+                            //     if (loans.get(i).getItem() instanceof Book) {
+                            //         bookLoans.add(loans.get(i));
+                            //     }
+                            // }
+                            // LoanInformationScreen infoScreen = new LoanInformationScreen(bookLoans);
+                            // infoScreen.setVisible(true);
+                            // dispose();
                         }
                         if (actionButton.equals("Overdue")) {
-
+                            // List<Loan> loans = LoanController.fetchAllLoans();
+                            // List<Loan> overdue = new LinkedList<>();
+                            // for (int i = 0; i < loans.size(); i++) {
+                            //     if (loans.get(i).isOverDue() && loans.get(i).getItem() instanceof Book) {
+                            //         overdue.add(loans.get(i));
+                            //     }
+                            // }
+                            // LoanInformationScreen infoScreen = new LoanInformationScreen(overdue);
+                            // infoScreen.setVisible(true);
+                            // dispose();
                         }
+                    }
+                    else if (selectedItem.equals("Documentaries")) {
+
                     }
                 }
             });
@@ -301,5 +362,41 @@ public class LoansScreen extends JFrame {
         } catch (DateTimeParseException error) {
             return null;
         }
+    }
+
+    private void showReciept(Loan loan) {
+        JPanel panel = new JPanel(new GridLayout(2, 2));
+        panel.setBackground(new Color(240, 240, 240));
+
+        JLabel label1 = new JLabel("Loan Number:");
+        JLabel label2;
+        if (loan.getItem() instanceof Book)
+            label2 = new JLabel("Loaned Book:");
+        else
+            label2 = new JLabel("Loaned Documentary:");
+        JLabel label3 = new JLabel("Student:");
+        JLabel label4 = new JLabel("Loaned Date:");
+        JLabel label5 = new JLabel("Due Date:");
+        JLabel label6 = new JLabel("Daily Overdue Price:");
+
+
+        panel.add(label1);
+        panel.add(new JLabel(Integer.toString(loan.getNumber())));
+        panel.add(label2);
+        panel.add(new JLabel(Integer.toString(loan.getItem().getCode()) + " | " + loan.getItem().getTitle()));
+        panel.add(label3);
+        panel.add(new JLabel(Integer.toString(loan.getStudent().getBroncoId()) + " | " + loan.getStudent().getName()));
+        panel.add(label4);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
+        String loanDate = loan.getLoanDate().format(formatter);
+        panel.add(new JLabel(loanDate));
+        String dueDate = loan.getDueDate().format(formatter);
+        panel.add(label5);
+        panel.add(new JLabel(dueDate));
+        panel.add(label6);
+        panel.add(new JLabel(Double.toString(loan.getItem().getDailyPrice())));
+
+        JOptionPane.showOptionDialog(this, panel, "Loan has been added!", JOptionPane.DEFAULT_OPTION,
+                JOptionPane.PLAIN_MESSAGE, null, new Object[] { "OK" }, null);
     }
 }
