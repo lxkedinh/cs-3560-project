@@ -17,10 +17,12 @@ public class ButtonScreen extends JFrame {
         JButton loansButton = createButton("Loans");
         JButton inventoryButton = createButton("Inventory");
         JButton managementButton = createButton("Management");
+        JButton reportButton = createButton("Financial");
 
         buttonPanel.add(loansButton);
         buttonPanel.add(inventoryButton);
         buttonPanel.add(managementButton);
+        buttonPanel.add(reportButton);
 
         JLabel logoLabel = createLogoLabel(System.getProperty("user.dir") + "/src/main/java/cs_3560_project/app/logo.png"); // Specify the path to your PNG logo image
         add(logoLabel, BorderLayout.CENTER); // Place the logo label in the center
