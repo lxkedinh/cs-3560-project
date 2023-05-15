@@ -27,7 +27,8 @@ public class Book extends Item {
   private LocalDate publicationDate;
 
   @ManyToMany(fetch = FetchType.EAGER)
-  @JoinTable(name = "author_book", joinColumns = @JoinColumn(name = "item_code"), inverseJoinColumns = @JoinColumn(name = "author_id"))
+  @JoinTable(name = "author_book", joinColumns = @JoinColumn(name = "item_code"),
+      inverseJoinColumns = @JoinColumn(name = "author_id"))
   private List<Author> authors;
 
   public Book() {
@@ -35,7 +36,8 @@ public class Book extends Item {
   }
 
   public Book(int code, String title, String description, String location, double dailyPrice,
-      ItemStatus status, int pages, String publisher, LocalDate publicationDate, List<Author> authors) {
+      ItemStatus status, int pages, String publisher, LocalDate publicationDate,
+      List<Author> authors) {
     super(code, title, description, location, dailyPrice, status);
     this.pages = pages;
     this.publisher = publisher;
@@ -74,6 +76,4 @@ public class Book extends Item {
   public void setAllAuthors(List<Author> authors) {
     this.authors = authors;
   }
-
-  // TODO: toString()
 }

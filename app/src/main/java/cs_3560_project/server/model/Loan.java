@@ -1,9 +1,6 @@
 package cs_3560_project.server.model;
 
 import java.time.LocalDate;
-import org.hibernate.annotations.Filter;
-import org.hibernate.annotations.FilterDef;
-import org.hibernate.annotations.ParamDef;
 import cs_3560_project.server.dao.EntityNotFoundException;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -12,8 +9,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
-@FilterDef(name = "overdueFilter", parameters = @ParamDef(name = "date", type = LocalDate.class))
-@Filter(name = "overdueFilter", condition = "due_date < :date AND return_date IS NULL")
 
 @Entity
 @Table(name = "loan")
@@ -104,8 +99,6 @@ public class Loan {
   public void setItem(Item item) {
     this.item = item;
   }
-
-  // TODO: printReceipt()
 
   public void calculateTotalPrice() throws EntityNotFoundException {
     if (!isOverDue()) {

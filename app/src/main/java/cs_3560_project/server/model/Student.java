@@ -39,6 +39,4 @@ public class Student extends Person {
   public void setCourse(String course) {
     this.course = course;
   }
-
-  // TODO: toString()
 }
