@@ -1,8 +1,16 @@
 package cs_3560_project.app;
 
+import cs_3560_project.server.controllers.LoanController;
+import cs_3560_project.server.dao.EntityNotFoundException;
+import cs_3560_project.server.model.Book;
+import cs_3560_project.server.model.Documentary;
+import cs_3560_project.server.model.Item;
+import cs_3560_project.server.model.Loan;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.util.LinkedList;
 
 public class ButtonScreen extends JFrame {
 
@@ -49,6 +57,8 @@ public class ButtonScreen extends JFrame {
                     openManagementScreen();
                 else if (label.equals("Inventory"))
                     openInventoryScreen();
+                else if (label.equals("Financial"))
+                    openFinancialReport();
             }
         });
 
@@ -76,6 +86,24 @@ public class ButtonScreen extends JFrame {
     private void openLoansScreen() {
         LoansScreen loansScreen = new LoansScreen();
         loansScreen.setVisible(true);
+        dispose(); // Close the main screen
+    }
+    
+    private void openFinancialReport() {
+        java.util.List<Loan> loans;
+        try {
+            loans = LoanController.fetchAllLoans();
+        } catch (EntityNotFoundException error) {
+            loans = new LinkedList<>();
+        }
+        LinkedList<Loan> reportLoans = new LinkedList<>();
+        for (int i = 0; i < loans.size(); i++) {
+            if (loans.get(i).getItem() instanceof Item) {
+                reportLoans.add(loans.get(i));
+            }
+        }
+        ReportTableScreen reportScreen = new ReportTableScreen(reportLoans);
+        reportScreen.setVisible(true);
         dispose(); // Close the main screen
     }
 }
