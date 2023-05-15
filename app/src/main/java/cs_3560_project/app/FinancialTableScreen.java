@@ -149,7 +149,7 @@ public class FinancialTableScreen extends JFrame {
         JButton backButton = new JButton("Back");
         backButton.addActionListener(e -> {
             setVisible(false);
-            LoansScreen buttonScreen = new LoansScreen();
+            ButtonScreen buttonScreen = new ButtonScreen();
             buttonScreen.setVisible(true);
         });
 
