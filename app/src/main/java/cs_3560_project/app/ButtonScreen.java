@@ -1,8 +1,15 @@
 package cs_3560_project.app;
 
 import javax.swing.*;
+
+import cs_3560_project.server.controllers.LoanController;
+import cs_3560_project.server.dao.EntityNotFoundException;
+import cs_3560_project.server.model.Loan;
+
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.util.LinkedList;
+import java.util.List;
 
 public class ButtonScreen extends JFrame {
 
@@ -49,6 +56,20 @@ public class ButtonScreen extends JFrame {
                     openManagementScreen();
                 else if (label.equals("Inventory"))
                     openInventoryScreen();
+                else if (label.equals("Financial"))
+                {
+                    List<Loan> loanReport;
+                    try {
+                        loanReport = LoanController.fetchAllLoans();
+                    }
+                    catch (EntityNotFoundException error)
+                    {
+                        loanReport = new LinkedList<>();
+                    }
+                    FinancialTableScreen infoScreen = new FinancialTableScreen(loanReport);
+                    infoScreen.setVisible(true);
+                    dispose();
+                }
             }
         });
 
