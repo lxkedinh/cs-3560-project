@@ -5,6 +5,7 @@ import javax.swing.*;
 import cs_3560_project.server.controllers.ItemController;
 import cs_3560_project.server.controllers.LoanController;
 import cs_3560_project.server.controllers.StudentController;
+import cs_3560_project.server.dao.EntityNotFoundException;
 import cs_3560_project.server.model.Book;
 import cs_3560_project.server.model.Documentary;
 import cs_3560_project.server.model.ItemStatus;
@@ -19,6 +20,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
 import java.util.LinkedList;
+import java.util.List;
 
 public class LoansScreen extends JFrame {
     private JPanel mainPanel;
@@ -280,28 +282,46 @@ public class LoansScreen extends JFrame {
                             }
                         }
                         if (actionButton.equals("All Loans")) {
-                            // List<Loan> loans = LoanController.fetchAllLoans();
-                            // List<Loan> bookLoans = new LinkedList<>();
-                            // for (int i = 0; i < loans.size(); i++) {
-                            //     if (loans.get(i).getItem() instanceof Book) {
-                            //         bookLoans.add(loans.get(i));
-                            //     }
-                            // }
-                            // LoanInformationScreen infoScreen = new LoanInformationScreen(bookLoans);
-                            // infoScreen.setVisible(true);
-                            // dispose();
+                            List<Loan> loans;
+                            try {
+                                loans = LoanController.fetchAllLoans();
+                            }
+                            catch (EntityNotFoundException error)
+                            {
+                                loans = new LinkedList<>();
+                            }
+                            LinkedList<Loan> bookLoans = new LinkedList<>();
+                            for (int i = 0; i < loans.size(); i++) {
+                                if (loans.get(i).getItem() instanceof Book) {
+                                    bookLoans.add(loans.get(i));
+                                }
+                            }
+                            LoansTableScreen infoScreen = new LoansTableScreen(bookLoans);
+                            infoScreen.setVisible(true);
+                            dispose();
                         }
                         if (actionButton.equals("Overdue")) {
-                            // List<Loan> loans = LoanController.fetchAllLoans();
-                            // List<Loan> overdue = new LinkedList<>();
-                            // for (int i = 0; i < loans.size(); i++) {
-                            //     if (loans.get(i).isOverDue() && loans.get(i).getItem() instanceof Book) {
-                            //         overdue.add(loans.get(i));
-                            //     }
-                            // }
-                            // LoanInformationScreen infoScreen = new LoanInformationScreen(overdue);
-                            // infoScreen.setVisible(true);
-                            // dispose();
+                            List<Loan> loans;
+                            try {
+                                loans = LoanController.fetchAllLoans();
+                            } catch (EntityNotFoundException error) {
+                                loans = new LinkedList<>();
+                            }
+                            LinkedList<Loan> bookLoans = new LinkedList<>();
+                            for (int i = 0; i < loans.size(); i++) {
+                                if (loans.get(i).getItem() instanceof Book) {
+                                    bookLoans.add(loans.get(i));
+                                }
+                            }
+                            LinkedList<Loan> overdueBookLoans = new LinkedList<>();
+                            for (int i = 0; i < bookLoans.size(); i++) {
+                                if (bookLoans.get(i).isOverDue() && bookLoans.get(i).getReturnDate() == null) {
+                                    overdueBookLoans.add(bookLoans.get(i));
+                                }
+                            }
+                            OverdueLoansScreen infoScreen = new OverdueLoansScreen(overdueBookLoans);
+                            infoScreen.setVisible(true);
+                            dispose();
                         }
                     }
                     else if (selectedItem.equals("Documentaries")) {
@@ -391,28 +411,45 @@ public class LoansScreen extends JFrame {
                             }
                         }
                         if (actionButton.equals("All Loans")) {
-                            // List<Loan> loans = LoanController.fetchAllLoans();
-                            // List<Loan> bookLoans = new LinkedList<>();
-                            // for (int i = 0; i < loans.size(); i++) {
-                            // if (loans.get(i).getItem() instanceof Book) {
-                            // bookLoans.add(loans.get(i));
-                            // }
-                            // }
-                            // LoanInformationScreen infoScreen = new LoanInformationScreen(bookLoans);
-                            // infoScreen.setVisible(true);
-                            // dispose();
+                            List<Loan> loans;
+                            try {
+                                loans = LoanController.fetchAllLoans();
+                            } catch (EntityNotFoundException error) {
+                                loans = new LinkedList<>();
+                            }
+                            LinkedList<Loan> bookLoans = new LinkedList<>();
+                            for (int i = 0; i < loans.size(); i++) {
+                                if (loans.get(i).getItem() instanceof Documentary) {
+                                    bookLoans.add(loans.get(i));
+                                }
+                            }
+                            LoansTableScreen infoScreen = new LoansTableScreen(bookLoans);
+                            infoScreen.setVisible(true);
+                            dispose();
                         }
                         if (actionButton.equals("Overdue")) {
-                            // List<Loan> loans = LoanController.fetchAllLoans();
-                            // List<Loan> overdue = new LinkedList<>();
-                            // for (int i = 0; i < loans.size(); i++) {
-                            // if (loans.get(i).isOverDue() && loans.get(i).getItem() instanceof Book) {
-                            // overdue.add(loans.get(i));
-                            // }
-                            // }
-                            // LoanInformationScreen infoScreen = new LoanInformationScreen(overdue);
-                            // infoScreen.setVisible(true);
-                            // dispose();
+                            List<Loan> loans;
+                            try {
+                                loans = LoanController.fetchAllLoans();
+                            } catch (EntityNotFoundException error) {
+                                loans = new LinkedList<>();
+                            }
+                            LinkedList<Loan> bookLoans = new LinkedList<>();
+                            for (int i = 0; i < loans.size(); i++) {
+                                if (loans.get(i).getItem() instanceof Documentary) {
+                                    bookLoans.add(loans.get(i));
+                                }
+                            }
+                            LinkedList<Loan> overdueBookLoans = new LinkedList<>();
+                            for (int i = 0; i < bookLoans.size(); i++) {
+                                if (bookLoans.get(i).isOverDue() && bookLoans.get(i).getReturnDate() == null) {
+
+                                    overdueBookLoans.add(bookLoans.get(i));
+                                }
+                            }
+                            OverdueLoansScreen infoScreen = new OverdueLoansScreen(overdueBookLoans);
+                            infoScreen.setVisible(true);
+                            dispose();
                         }
                     }
                 }
