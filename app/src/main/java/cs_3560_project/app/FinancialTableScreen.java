@@ -9,6 +9,7 @@ import javax.swing.table.TableRowSorter;
 import cs_3560_project.server.model.Loan;
 
 import java.awt.*;
+import java.time.LocalDate;
 import java.time.Month;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -29,7 +30,12 @@ public class FinancialTableScreen extends JFrame {
 
         monthTotalMap = new TreeMap<>();
         createTable(loanList);
-        createHeaderPanel();
+        double total = 0;
+        for (int i = 0; i < loanList.size(); i++)
+        {
+            total = total + loanList.get(i).getTotalPrice();
+        }
+        createHeaderPanel(total);
         createButtonPanel();
 
         add(new JScrollPane(loansTable), BorderLayout.CENTER);
@@ -86,7 +92,7 @@ public class FinancialTableScreen extends JFrame {
         header.setDefaultRenderer(new HeaderRenderer());
     }
 
-    private void createHeaderPanel() {
+    private void createHeaderPanel(double total) {
         JPanel headerPanel = new JPanel(new BorderLayout());
         headerPanel.setBackground(new Color(240, 240, 240));
 
@@ -96,7 +102,7 @@ public class FinancialTableScreen extends JFrame {
         monthComboBox.addActionListener(e -> updateTable());
 
         // Total amount label
-        totalLabel = new JLabel("Total: $0.00");
+        totalLabel = new JLabel("Total: $" + total);
 
         JPanel innerHeaderPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         innerHeaderPanel.add(monthLabel);
@@ -129,7 +135,19 @@ public class FinancialTableScreen extends JFrame {
             Month month = Month.valueOf(selectedMonth);
             TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(model);
             loansTable.setRowSorter(sorter);
-            RowFilter<Object, Object> filter = RowFilter.regexFilter("(?i)" + month.toString(), 0);
+            RowFilter<Object, Object> filter = new RowFilter<Object, Object>() {
+                @Override
+                public boolean include(Entry<? extends Object, ? extends Object> entry) {
+                    int row = (int) entry.getIdentifier();
+                    String returnDate = (String) model.getValueAt(row, 0);
+                    if (!returnDate.equals("TBD")) {
+                        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
+                        LocalDate loanDate = LocalDate.parse(returnDate, formatter);
+                        return loanDate.getMonth() == month;
+                    }
+                    return false;
+                }
+            };
             sorter.setRowFilter(filter);
             total = monthTotalMap.getOrDefault(month, 0.0);
         }
@@ -149,7 +167,7 @@ public class FinancialTableScreen extends JFrame {
         JButton backButton = new JButton("Back");
         backButton.addActionListener(e -> {
             setVisible(false);
-            LoansScreen buttonScreen = new LoansScreen();
+            ButtonScreen buttonScreen = new ButtonScreen();
             buttonScreen.setVisible(true);
         });
 
@@ -160,6 +178,23 @@ public class FinancialTableScreen extends JFrame {
         buttonPanel.add(backButton, BorderLayout.WEST);
 
         add(buttonPanel, BorderLayout.SOUTH);
+    }
+
+    public static String convertMonthsToNumbers(String capitalizedMonths) {
+        StringBuilder numbers = new StringBuilder();
+        String[] months = capitalizedMonths.split("\\s+");
+
+        for (String month : months) {
+            try {
+                Month m = Month.valueOf(month.toUpperCase());
+                int monthNumber = m.getValue();
+                numbers.append(monthNumber).append(" ");
+            } catch (IllegalArgumentException e) {
+                // Month not found, ignore or handle accordingly
+            }
+        }
+
+        return numbers.toString().trim();
     }
 
     // Custom table header renderer

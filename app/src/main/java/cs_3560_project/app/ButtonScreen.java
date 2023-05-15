@@ -66,7 +66,13 @@ public class ButtonScreen extends JFrame {
                     {
                         loanReport = new LinkedList<>();
                     }
-                    FinancialTableScreen infoScreen = new FinancialTableScreen(loanReport);
+                    LinkedList<Loan> overdueBookLoans = new LinkedList<>();
+                    for (int i = 0; i < loanReport.size(); i++) {
+                        if (loanReport.get(i).isOverDue()) {
+                            overdueBookLoans.add(loanReport.get(i));
+                        }
+                    }
+                    FinancialTableScreen infoScreen = new FinancialTableScreen(overdueBookLoans);
                     infoScreen.setVisible(true);
                     dispose();
                 }
