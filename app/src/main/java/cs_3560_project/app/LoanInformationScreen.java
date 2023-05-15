@@ -2,31 +2,27 @@ package cs_3560_project.app;
 
 import javax.swing.*;
 
-import cs_3560_project.server.controllers.AuthorController;
-import cs_3560_project.server.controllers.DirectorController;
-import cs_3560_project.server.controllers.StudentController;
-import cs_3560_project.server.model.Author;
-import cs_3560_project.server.model.Director;
+import cs_3560_project.server.controllers.LoanController;
+import cs_3560_project.server.dao.EntityNotFoundException;
+import cs_3560_project.server.model.Book;
 import cs_3560_project.server.model.Loan;
-import cs_3560_project.server.model.Student;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.LinkedList;
-import java.util.List;
 
 public class LoanInformationScreen extends JFrame {
     private JPanel mainPanel;
-    private JComboBox<String> dropdown;
     private JPanel buttonPanel;
     private JPanel formsPanel;
     private JButton backButton;
     private JButton enterButton;
-    private List<Loan> loans;
+    private Loan loan;
 
-    public LoanInformationScreen(List<Loan> loans) {
-        this.loans = loans;
+    public void initilize() {
 
         setTitle("Information Screen");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -35,12 +31,10 @@ public class LoanInformationScreen extends JFrame {
         mainPanel = new JPanel(new BorderLayout());
         mainPanel.setBackground(new Color(240, 240, 240)); // Light gray background color
 
-        createDropdown();
         createButtonPanel();
         createFormsPanel();
         createButtons();
 
-        mainPanel.add(dropdown, BorderLayout.NORTH);
         mainPanel.add(buttonPanel, BorderLayout.CENTER);
         mainPanel.add(formsPanel, BorderLayout.SOUTH);
 
@@ -51,46 +45,9 @@ public class LoanInformationScreen extends JFrame {
         setLocationRelativeTo(null);
     }
 
-    private void createDropdown() {
-        DefaultListCellRenderer renderer = new DefaultListCellRenderer() {
-            @Override
-            public Component getListCellRendererComponent(JList<?> list, Object value, int index,
-                    boolean isSelected, boolean cellHasFocus) {
-                Component component = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-
-                if (isSelected) {
-                    component.setBackground(new Color(60, 72, 107)); // Set your desired highlight color
-                    component.setForeground(new Color(240, 240, 240)); // Set the text color
-                } else {
-                    component.setBackground(list.getBackground());
-                    component.setForeground(list.getForeground());
-                }
-
-                return component;
-            }
-        };
-
-        // Get dropdown
-        LinkedList<String> options = new LinkedList<>();
-        options.add("Select Loan");
-        for (int i = 0; i < loans.size(); i++) {
-            options.add("Loan Result " + i + 1);
-        }
-        dropdown = new JComboBox<>(options.toArray(new String[options.size()]));
-        dropdown.setRenderer(renderer);
-        dropdown.setPreferredSize(new Dimension(50, 50));
-        dropdown.setFont(new Font("Arial", Font.BOLD, 16));
-        dropdown.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                if (!dropdown.getSelectedItem().equals("Select Loan")) {
-                    String selectedItem = (String) dropdown.getSelectedItem();
-                    updateButtonPanel(selectedItem);
-                    formsPanel.removeAll();
-                }
-            }
-        });
-        dropdown.setAlignmentX(Component.CENTER_ALIGNMENT);
-        dropdown.setSelectedItem("Select Loan");
+    public LoanInformationScreen(Loan loan) {
+        this.loan = loan;
+        initilize();
     }
 
     private void createButtonPanel() {
@@ -98,14 +55,19 @@ public class LoanInformationScreen extends JFrame {
         buttonPanel.setBackground(new Color(240, 240, 240)); // Light gray background color
         buttonPanel.setPreferredSize(new Dimension(400, 100));
 
-        updateButtonPanel(null);
+        String selectedItem;
+        if (loan.getItem() instanceof Book)
+            selectedItem = "Book";
+        else
+            selectedItem = "Documentary";
+        updateButtonPanel(selectedItem);
     }
 
     private void updateButtonPanel(String selectedItem) {
         buttonPanel.removeAll();
 
         if (selectedItem != null) {
-            String[] buttons = { "Add", "Search" };
+            String[] buttons = { "Info", "Return", "Delete" };
             for (String buttonText : buttons) {
                 JButton button = createButton(buttonText);
                 button.addActionListener(new ActionListener() {
@@ -130,60 +92,104 @@ public class LoanInformationScreen extends JFrame {
         // Initialize the enterButton here
         enterButton = createButton("Enter");
 
-        updateFormsPanel(null, null);
+        String selectedItem;
+        if (loan.getItem() instanceof Book)
+            selectedItem = "Book";
+        else
+            selectedItem = "Documentary";
+        updateFormsPanel(selectedItem, "Info");
     }
 
     private void updateFormsPanel(String selectedItem, String actionButton) {
         formsPanel.removeAll();
         if (selectedItem != null && actionButton != null) {
-            LinkedList<JTextField> fields = new LinkedList<>();
 
             // Implement Forms
-            if (actionButton.equals("Add")) {
-                if (selectedItem.equals("Student")) {
+            if (actionButton.equals("Info")) {
+                if (selectedItem.equals("Book")) {
                     LinkedList<String> lables = new LinkedList<>();
-                    lables.add("Name: ");
-                    lables.add("BroncoID: ");
-                    lables.add("Course: ");
-                    fields = FormSpecification.getTextFields("Add Student", lables, formsPanel);
+                    lables.add("Number: ");
+                    lables.add("Loan Date (MM/DD/YYYY): ");
+                    lables.add("Due Date (MM/DD/YYYY): ");
+                    lables.add("Student ID: ");
+                    lables.add("Book Code: ");
+                    lables.add("Return Date(MM/DD/YYYY): ");
+                    lables.add("Total Price: ");
+                    LinkedList<String> data = new LinkedList<>();
+                    data.add(Integer.toString(loan.getNumber()));
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
+                    String loanString = loan.getLoanDate().format(formatter);
+                    data.add(loanString);
+                    String dateString = loan.getDueDate().format(formatter);
+                    data.add(dateString);
+                    data.add(Integer.toString(loan.getStudent().getBroncoId()));
+                    data.add(Integer.toString(loan.getItem().getCode()));
+                    if (loan.getReturnDate() != null)
+                    {
+                        String returnString = loan.getReturnDate().format(formatter);
+                        data.add(returnString);
+                        data.add(Double.toString(loan.getTotalPrice()));
+                    }
+                    else
+                    {
+                        data.add("TBD");
+                        data.add("TBD");
+                    }
+                    FormSpecification.showInfo("Book Loan", lables, data, formsPanel);
                 }
-                if (selectedItem.equals("Author")) {
+                if (selectedItem.equals("Documentary")) {
                     LinkedList<String> lables = new LinkedList<>();
-                    lables.add("ID: ");
-                    lables.add("Name: ");
-                    lables.add("Nationality: ");
-                    lables.add("Subject: ");
-                    fields = FormSpecification.getTextFields("Add Author", lables, formsPanel);
-                }
-                if (selectedItem.equals("Director")) {
-                    LinkedList<String> lables = new LinkedList<>();
-                    lables.add("ID: ");
-                    lables.add("Name: ");
-                    lables.add("Nationality: ");
-                    lables.add("Style: ");
-                    fields = FormSpecification.getTextFields("Add Director", lables, formsPanel);
+                    lables.add("Number: ");
+                    lables.add("Loan Date (MM/DD/YYYY): ");
+                    lables.add("Due Date (MM/DD/YYYY): ");
+                    lables.add("Student ID: ");
+                    lables.add("Documentary Code: ");
+                    lables.add("Return Date(MM/DD/YYYY): ");
+                    lables.add("Total Price: ");
+                    LinkedList<String> data = new LinkedList<>();
+                    data.add(Integer.toString(loan.getNumber()));
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
+                    String loanString = loan.getLoanDate().format(formatter);
+                    data.add(loanString);
+                    String dateString = loan.getDueDate().format(formatter);
+                    data.add(dateString);
+                    data.add(Integer.toString(loan.getStudent().getBroncoId()));
+                    data.add(Integer.toString(loan.getItem().getCode()));
+                    if (loan.getReturnDate() != null) {
+                        String returnString = loan.getReturnDate().format(formatter);
+                        data.add(returnString);
+                        data.add(Double.toString(loan.getTotalPrice()));
+                    } else {
+                        data.add("TBD");
+                        data.add("TBD");
+                    }
+                    FormSpecification.showInfo("Documentary Loan", lables, data, formsPanel);
                 }
             }
-            if (actionButton.equals("Search")) {
-                if (selectedItem.equals("Student")) {
+            else if (actionButton.equals("Return")) {
+                if (selectedItem.equals("Book")) {
                     LinkedList<String> lables = new LinkedList<>();
-                    lables.add("Student ID: ");
-                    fields = FormSpecification.getTextFields("Search For Student", lables, formsPanel);
+                    lables.add("Total Price: ");
+                    LinkedList<String> data = new LinkedList<>();
+                    double calculatedPrice = 1.1 * (LocalDate.now().compareTo(loan.getDueDate())) * loan.getItem().getDailyPrice();
+                    if (calculatedPrice < 0)
+                        calculatedPrice = 0.0;
+                    data.add(Double.toString(calculatedPrice));
+                    FormSpecification.showInfo("Return Book", lables, data, formsPanel);
                 }
-                if (selectedItem.equals("Author")) {
+                if (selectedItem.equals("Documentary")) {
                     LinkedList<String> lables = new LinkedList<>();
-                    lables.add("Author ID: ");
-                    fields = FormSpecification.getTextFields("Search For Author", lables, formsPanel);
-                }
-                if (selectedItem.equals("Director")) {
-                    LinkedList<String> lables = new LinkedList<>();
-                    lables.add("Director ID: ");
-                    fields = FormSpecification.getTextFields("Search For Director", lables, formsPanel);
+                    lables.add("Total Price: ");
+                    LinkedList<String> data = new LinkedList<>();
+                    double calculatedPrice = 1.1 * (LocalDate.now().compareTo(loan.getDueDate())) * loan.getItem().getDailyPrice();
+                    if (calculatedPrice < 0)
+                        calculatedPrice = 0.0;
+                    data.add(Double.toString(calculatedPrice));
+                    FormSpecification.showInfo("Return Documentary", lables, data, formsPanel);
                 }
             }
 
             // Shortened code for entered fields
-            final LinkedList<JTextField> ef = fields;
 
             // Enter Button
             GridBagConstraints gbc = new GridBagConstraints();
@@ -191,88 +197,75 @@ public class LoanInformationScreen extends JFrame {
             gbc.gridy = 10;
             gbc.anchor = GridBagConstraints.EAST;
             gbc.insets = new Insets(20, 0, 0, 0);
-            enterButton = createButton("Enter");
+            if (actionButton.equals("Delete"))
+                enterButton = createButton("Confirm");
+            else if (actionButton.equals("Return"))
+                enterButton = createButton("Confirm");
+            else
+                enterButton = createButton("Enter");
             enterButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     // Implement Field Use
-                    if (actionButton.equals("Add")) {
-                        if (selectedItem.equals("Student")) {
-                            Student student = new Student(
-                                    ef.get(0).getText(),
-                                    Integer.parseInt(ef.get(1).getText()),
-                                    ef.get(2).getText());
-                            StudentController.insertStudent(student);
-                            alert(student.getName() + " has been added!");
-                            clearFields(ef);
+                    if (actionButton.equals("Return")) {
+                        if (selectedItem.equals("Book")) {
+                            try {
+                                if (loan.getReturnDate() != null)
+                                    throw new Exception("");
+                                LoanController.returnItem(loan.getNumber());
+                                updateFormsPanel(selectedItem, actionButton);
+                                loan = LoanController.fetchLoan(loan.getNumber());
+                                alert("Book has been returned!");
+                            } catch (Exception error) {
+                                alert("Book Loan already returned.");
+                            }
                         }
-                        if (selectedItem.equals("Author")) {
-                            Author author = new Author(
-                                    ef.get(1).getText(),
-                                    Integer.parseInt(ef.get(0).getText()),
-                                    ef.get(2).getText(),
-                                    ef.get(3).getText());
-                            AuthorController.insertAuthor(author);
-                            alert(author.getName() + " has been added!");
-                            clearFields(ef);
-                        }
-                        if (selectedItem.equals("Director")) {
-                            Director director = new Director(
-                                    ef.get(1).getText(),
-                                    Integer.parseInt(ef.get(0).getText()),
-                                    ef.get(2).getText(),
-                                    ef.get(3).getText());
-                            DirectorController.insertDirector(director);
-                            alert(director.getName() + " has been added!");
-                            clearFields(ef);
+                        if (selectedItem.equals("Documentary")) {
+                            try {
+                                if (loan.getReturnDate() != null)
+                                    throw new Exception("");
+                                LoanController.returnItem(loan.getNumber());
+                                updateFormsPanel(selectedItem, actionButton);
+                                loan = LoanController.fetchLoan(loan.getNumber());
+                                alert("Documentary has been returned!");
+                            } catch (Exception error) {
+                                alert("Documentary Loan already returned.");
+                            }
                         }
                     }
-                    if (actionButton.equals("Search")) {
-                        if (selectedItem.equals("Student")) {
-                            int id = Integer.parseInt(ef.get(0).getText());
+                    if (actionButton.equals("Delete")) {
+                        if (selectedItem.equals("Book")) {
                             try {
-                                Student student = StudentController.fetchStudent(id);
-                                PersonInformationScreen infoScreen = new PersonInformationScreen(student);
-                                infoScreen.setVisible(true);
-                                dispose();
-                            } catch (Exception error) {
-                                alert("Student with ID: " + id + " was not found.");
-                                System.out.println(error.toString());
-                            } finally {
-                                clearFields(ef);
+                                if (loan.getReturnDate() == null)
+                                    LoanController.returnItem(loan.getNumber());
+                                LoanController.deleteLoan(loan.getNumber());
+                                // Go Back
+                                setVisible(false);
+                                LoansScreen buttonScreen = new LoansScreen();
+                                buttonScreen.setVisible(true);
+                                // Output Message
+                                alert("Book Loan has been deleted.");
+                            } catch (EntityNotFoundException error) {
                             }
                         }
-                        if (selectedItem.equals("Author")) {
-                            int id = Integer.parseInt(ef.get(0).getText());
+                        if (selectedItem.equals("Documentary")) {
                             try {
-                                Author author = AuthorController.fetchAuthor(id);
-                                PersonInformationScreen infoScreen = new PersonInformationScreen(author);
-                                infoScreen.setVisible(true);
-                                dispose();
-                            } catch (Exception error) {
-                                alert("Author with ID: " + id + " was not found.");
-                                System.out.println(error.toString());
-                            } finally {
-                                clearFields(ef);
-                            }
-                        }
-                        if (selectedItem.equals("Director")) {
-                            int id = Integer.parseInt(ef.get(0).getText());
-                            try {
-                                Director director = DirectorController.fetchDirector(id);
-                                PersonInformationScreen infoScreen = new PersonInformationScreen(director);
-                                infoScreen.setVisible(true);
-                                dispose();
-                            } catch (Exception error) {
-                                alert("Director with ID: " + id + " was not found.");
-                                System.out.println(error.toString());
-                            } finally {
-                                clearFields(ef);
+                                if (loan.getReturnDate() == null)
+                                    LoanController.returnItem(loan.getNumber());
+                                LoanController.deleteLoan(loan.getNumber());
+                                // Go Back
+                                setVisible(false);
+                                LoansScreen buttonScreen = new LoansScreen();
+                                buttonScreen.setVisible(true);
+                                // Output Message
+                                alert("Documentary Loan has been deleted.");
+                            } catch (EntityNotFoundException error) {
                             }
                         }
                     }
                 }
             });
-            formsPanel.add(enterButton, gbc);
+            if (!actionButton.equals("Info"))
+                formsPanel.add(enterButton, gbc);
         }
 
         formsPanel.revalidate();
@@ -285,8 +278,8 @@ public class LoanInformationScreen extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 setVisible(false); // Hide the current window
                 // Show the previous window (assuming it's an instance of ButtonScreen)
-                LoansScreen loansScreen = new LoansScreen();
-                loansScreen.setVisible(true);
+                LoansScreen buttonScreen = new LoansScreen();
+                buttonScreen.setVisible(true);
             }
         });
 

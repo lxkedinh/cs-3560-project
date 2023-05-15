@@ -235,6 +235,7 @@ public class InventoryScreen extends JFrame {
                                     DirectorController.deleteDirector(director.getId());
                                     ItemController.insertDocumentary(documentary);
                                 } catch (Exception error) {
+                                    DirectorController.insertDirector(director);
                                     throw new Exception("Exists");
                                 }
                                 alert(documentary.getTitle() + " has been added!");
