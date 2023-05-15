@@ -5,8 +5,6 @@ package cs_3560_project.app;
 
 import org.junit.jupiter.api.Test;
 
-import cs_3560_project.app.App;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 class AppTest {
