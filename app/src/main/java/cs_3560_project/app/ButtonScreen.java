@@ -8,9 +8,15 @@ import cs_3560_project.server.model.Item;
 import cs_3560_project.server.model.Loan;
 
 import javax.swing.*;
+
+import cs_3560_project.server.controllers.LoanController;
+import cs_3560_project.server.dao.EntityNotFoundException;
+import cs_3560_project.server.model.Loan;
+
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.util.LinkedList;
+import java.util.List;
 
 public class ButtonScreen extends JFrame {
 
@@ -90,20 +96,16 @@ public class ButtonScreen extends JFrame {
     }
     
     private void openFinancialReport() {
-        java.util.List<Loan> loans;
-        try {
-            loans = LoanController.fetchAllLoans();
-        } catch (EntityNotFoundException error) {
-            loans = new LinkedList<>();
-        }
-        LinkedList<Loan> reportLoans = new LinkedList<>();
-        for (int i = 0; i < loans.size(); i++) {
-            if (loans.get(i).getItem() instanceof Item) {
-                reportLoans.add(loans.get(i));
-            }
-        }
-        ReportTableScreen reportScreen = new ReportTableScreen(reportLoans);
-        reportScreen.setVisible(true);
+        List<Loan> loanReport;
+                    try {
+                        loanReport = LoanController.fetchAllLoans();
+                    }
+                    catch (EntityNotFoundException error)
+                    {
+                        loanReport = new LinkedList<>();
+                    }
+                    FinancialTableScreen infoScreen = new FinancialTableScreen(loanReport);
+                    infoScreen.setVisible(true);
         dispose(); // Close the main screen
     }
 }

@@ -82,7 +82,7 @@ public class LoanController {
       CriteriaBuilder cb = session.getCriteriaBuilder();
       CriteriaQuery<Loan> cr = cb.createQuery(Loan.class);
       Root<Loan> root = cr.from(Loan.class);
-      cr.select(root).where(cb.isNotNull(root.get("return_date")));
+      cr.select(root).where(root.get("return_date").isNotNull());
       wrapper.loans = session.createQuery(cr).getResultList();
     });
 
