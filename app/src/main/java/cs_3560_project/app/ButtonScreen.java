@@ -97,15 +97,16 @@ public class ButtonScreen extends JFrame {
     
     private void openFinancialReport() {
         List<Loan> loanReport;
-                    try {
-                        loanReport = LoanController.fetchAllLoans();
-                    }
-                    catch (EntityNotFoundException error)
-                    {
-                        loanReport = new LinkedList<>();
-                    }
-                    FinancialTableScreen infoScreen = new FinancialTableScreen(loanReport);
-                    infoScreen.setVisible(true);
+        try
+        {
+            loanReport = LoanController.fetchAllLoans();
+        }
+        catch (EntityNotFoundException error)
+        {
+            loanReport = new LinkedList<>();
+        }
+        FinancialTableScreen infoScreen = new FinancialTableScreen(loanReport);
+        infoScreen.setVisible(true);
         dispose(); // Close the main screen
     }
 }
