@@ -243,8 +243,8 @@ public class PersonInformationScreen extends JFrame {
                             director.setNationality(ef.get(2).getText());
                             director.setStyle(ef.get(3).getText());
                             DirectorController.updateDirector(director);
+                            updateFormsPanel(selectedItem, actionButton);
                             alert(director.getName() + " has been updated!");
-                            clearFields(ef);
                         }
                     }
                     if (actionButton.equals("Delete")) {
